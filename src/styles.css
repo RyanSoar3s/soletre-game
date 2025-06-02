@@ -26,6 +26,6 @@
 }
 
 body {
-  @apply h-svh w-svw font-inter overflow-x-hidden;
+  @apply h-svh w-svw font-inter overflow-hidden;
 
 }
