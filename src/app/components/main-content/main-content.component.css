@@ -1,0 +1,31 @@
+@reference "tailwindcss";
+
+@utility h-90px {
+  height: 90px;
+
+}
+
+@utility w-90px {
+  width: 90px;
+
+}
+
+@utility circle {
+  border-radius: 50%;
+
+}
+
+:host {
+  @apply flex items-center justify-center h-svh w-svw;
+
+}
+
+.input-text {
+  @apply absolute h-0 w-[100px] opacity-1 cursor-default focus-visible:outline-none;
+
+}
+
+.game {
+  @apply flex items-center justify-center text-3xl font-bold select-none cursor-pointer h-90px w-90px circle;
+
+}
