@@ -14,7 +14,8 @@
     "moduleResolution": "bundler",
     "paths": {
       "@components/*": [ "./src/app/components/*" ],
-      "@models/*": [ "./src/app/models/*" ]
+      "@models/*": [ "./src/app/models/*" ],
+      "@pipes/*": [ "./src/app/pipes/*" ]
 
     },
     "importHelpers": true,
