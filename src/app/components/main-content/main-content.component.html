@@ -1,13 +1,17 @@
 <section [ngClass]="'flex flex-col gap-y-7 items-center justify-center relative w-[410px]'">
-  <div [ngClass]="'relative h-[39px] w-full flex justify-center cursor-pointer z-10'" (click)="activeInput()">
-    <input #input [autocomplete]="'off'" [(ngModel)]="text" [ngClass]="'input-text'" type="text" name="text" id="text">
+  <div [ngClass]="'relative h-[39px] w-full flex justify-center cursor-pointer z-10'">
+    <input #input [maxlength]="MAX_TEXT_LEN" [autocomplete]="'off'" [(ngModel)]="text" [ngClass]="'input-text'" type="text" name="text" id="text">
 
   </div>
 
-  <div [ngClass]="'absolute -top-1 w-svw text-center text-[2em] font-semibold'">
-    {{ text }}<span [ngClass]="'animate-blinking-cursor text-blue-600'"> |</span>
+  @defer (hydrate never) {
+    <div [ngClass]="'flex justify-center gap-x-1 absolute -top-1 w-svw text-center text-[2em] font-semibold'">
+      <span [innerHTML]="text | uppercase | safeHtml:classList" [ngClass]="'flex gap-x-1 select-none'"></span>
+      <span [ngClass]="'animate-blinking-cursor text-blue-600 select-none'"> |</span>
 
-  </div>
+    </div>
+
+  }
 
   <div [ngClass]="'grid grid-rows-3 grid-cols-7 place-items-center h-full w-full'">
     @for (letter of gameLetters.letters; track $index) {
@@ -19,10 +23,24 @@
       letter.colStart
 
       ]"
+      (click)="triggerAddChar(letter.letter)"
       >{{ letter.letter }}</div>
 
     }
 
   </div>
 
+  <div [ngClass]="'flex items-center justify-evenly w-full'">
+    <button [ngClass]="'btn h-12 w-28.5 rounded-3xl'" (click)="triggerDeleteText()">Apagar</button>
+
+    <button [ngClass]="'btn h-12 w-12 rounded-full'" (click)="triggerShuffleLetters()">
+      <fa-icon [icon]="faRotate"></fa-icon>
+
+    </button>
+
+    <button [ngClass]="'btn h-12 w-28.5 rounded-3xl'" (click)="triggerCheckWordInList()">Confirmar</button>
+
+  </div>
+
 </section>
+

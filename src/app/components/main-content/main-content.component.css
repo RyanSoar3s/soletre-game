@@ -15,8 +15,13 @@
 
 }
 
+@utility scale-button {
+  transform: scale(0.9);
+
+}
+
 :host {
-  @apply flex items-center justify-center h-svh w-svw;
+  @apply flex items-center justify-center h-svh w-svw overflow-hidden;
 
 }
 
@@ -26,6 +31,11 @@
 }
 
 .game {
-  @apply flex items-center justify-center text-3xl font-bold select-none cursor-pointer h-90px w-90px circle;
+  @apply flex items-center justify-center text-3xl font-bold select-none cursor-pointer h-90px w-90px circle active:scale-button transition;
+
+}
+
+.btn {
+  @apply border border-gray-300 font-semibold active:bg-gray-300 select-none cursor-pointer;
 
 }
