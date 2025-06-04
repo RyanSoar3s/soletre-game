@@ -20,6 +20,21 @@
 
 }
 
+@utility l-central {
+  @apply text-blue-600;
+
+}
+
+@utility l-valid {
+  @apply text-black;
+
+}
+
+@utility l-invalid {
+  @apply text-gray-300;
+
+}
+
 * {
   @apply p-0 m-0 box-border;
 
