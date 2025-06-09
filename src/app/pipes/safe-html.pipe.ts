@@ -6,13 +6,14 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 })
 export class SafeHtmlPipe implements PipeTransform {
 
-  sanitizer = inject(DomSanitizer);
+  private sanitizer = inject(DomSanitizer);
 
-  transform(value: string, className: string[]): SafeHtml {
+  transform(args: [ string, Array<String> ]): SafeHtml {
+    const [ value, className ] = args;
     let html: string = "";
 
     for (const index in className) {
-      html += `<span class=${className[index]}>${value[index]}</span>\n`
+      html += `<span class=${className[index]}>${value[index]}</span>`;
 
     }
 
