@@ -4,14 +4,11 @@
 
   </div>
 
-  @defer (hydrate never) {
-    <div [ngClass]="'flex justify-center gap-x-1 absolute -top-1 w-svw text-center text-[2em] font-semibold'">
-      <span [innerHTML]="text | uppercase | safeHtml:classList" [ngClass]="'flex gap-x-1 select-none'"></span>
-      <span [ngClass]="'animate-blinking-cursor text-blue-600 select-none'"> |</span>
+  <div [ngClass]="'flex justify-center gap-x-1 absolute -top-1 w-svw text-center text-[2em] font-semibold'">
+    <span [innerHTML]="text | uppercase | validateChar:chars | safeHtml" [ngClass]="'flex gap-x-1 select-none'"></span>
+    <span [ngClass]="'animate-blinking-cursor text-blue-600 select-none'"> |</span>
 
-    </div>
-
-  }
+  </div>
 
   <div [ngClass]="'grid grid-rows-3 grid-cols-7 place-items-center h-full w-full'">
     @for (letter of gameLetters.letters; track $index) {
