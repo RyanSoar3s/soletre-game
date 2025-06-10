@@ -21,7 +21,7 @@
 }
 
 :host {
-  @apply flex items-center justify-center h-svh w-svw overflow-hidden;
+  @apply flex items-center justify-center h-lvh w-lvw overflow-hidden;
 
 }
 
