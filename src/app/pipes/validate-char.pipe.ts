@@ -5,8 +5,9 @@ import { TrimPipe } from './trim.pipe';
   name: 'validateChar'
 })
 export class ValidateCharPipe implements PipeTransform {
-  transform(value: string, charList: Array<string>): [ string, Array<string> ] {
+  transform(value: string, chars: string): [ string, Array<string> ] {
     const classNameArray: Array<string> = [];
+    const charList = chars.split("");
     let className: string = "l-invalid";
 
     const trim = new TrimPipe();
@@ -14,8 +15,8 @@ export class ValidateCharPipe implements PipeTransform {
 
     for (const v of value) {
       const normalizedChar = this.normalizeString(v);
-      if (charList.includes(normalizedChar)) {
-        if (charList.indexOf(normalizedChar) === 3) className = "l-central";
+      if (charList.includes(normalizedChar.toLowerCase())) {
+        if (charList.indexOf(normalizedChar.toLowerCase()) === 3) className = "l-central";
         else className = "l-valid";
 
       }
@@ -28,7 +29,7 @@ export class ValidateCharPipe implements PipeTransform {
 
   }
 
-  private normalizeString(str: string): string {
+  normalizeString(str: string): string {
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, '');
 
   }
