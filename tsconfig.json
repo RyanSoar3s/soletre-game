@@ -15,12 +15,18 @@
     "paths": {
       "@components/*": [ "./src/app/components/*" ],
       "@models/*": [ "./src/app/models/*" ],
-      "@pipes/*": [ "./src/app/pipes/*" ]
+      "@pipes/*": [ "./src/app/pipes/*" ],
+      "@services/*": [ "./src/app/services/*" ],
+      "@environments/*": [ "./src/environments/*" ]
 
     },
     "importHelpers": true,
     "target": "ES2022",
-    "module": "ES2022"
+    "module": "esnext"
+  },
+  "ts-node": {
+    "esm": true
+
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
