@@ -5,6 +5,9 @@
   --font-inter: "Inter", sans-serif;
   --animate-blinking-cursor: blinking .6s ease-in infinite;
 
+  --animate-arrow-rotate-up: rotate_up .5s ease;
+  --animate-arrow-rotate-down: rotate_down .5s ease;
+
   @keyframes blinking {
     0%, 100% {
       opacity: 1;
@@ -13,6 +16,32 @@
 
     50% {
       opacity: 0;
+
+    }
+
+  }
+
+  @keyframes rotate_up {
+    from {
+      rotate: 0deg;
+
+    }
+
+    to {
+      rotate: 180deg;
+
+    }
+
+  }
+
+  @keyframes rotate_down {
+    from {
+      rotate: 180deg;
+
+    }
+
+    to {
+      rotate: 0deg;
 
     }
 
