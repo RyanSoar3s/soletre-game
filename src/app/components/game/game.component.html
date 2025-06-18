@@ -1,0 +1,89 @@
+<div [@textAnimation]="(isAnimate) ? 'open' : 'close'" (@textAnimation.done)="isAnimate = false" [ngClass]="'box-message'">
+  <p [ngClass]="'text-[1.1em]'">{{ message }}</p>
+
+</div>
+
+<div [ngClass]="'word-panel'" [ngStyle]="{ 'height': (isOpen) ? '40%' : '5.5%' }">
+  <div [ngClass]="'h-full w-full'">
+    <div [ngClass]="'flex flex-row-reverse items-center justify-between mb-1.5'">
+      <div
+      [ngClass]="{
+      'arrow': true,
+      'animate-arrow-rotate-down': !isOpen,
+      'animate-arrow-rotate-up': isOpen
+
+      }"
+      [ngStyle]="{
+        'rotate': (isOpen) ? '180deg' : '0deg'
+
+      }"
+      (click)="isOpen = !isOpen">
+        <img [src]="pathArrowDownImg" [alt]="'seta baixo'">
+
+      </div>
+      <p [ngClass]="'text-gray-400'">{{ totalWordsFound }} palavras encontradas</p>
+
+    </div>
+
+    @if (isOpen) {
+      <div [ngClass]="'h-[calc(100%-33px)] overflow-y-auto'">
+        @for (word of wordsFound; track $index) {
+          <p>{{ word }}</p>
+
+      }
+
+      </div>
+
+    }
+
+  </div>
+
+</div>
+
+<section [ngClass]="'flex flex-col gap-y-7 items-center justify-center relative w-[410px]'">
+  <div [ngClass]="'relative h-[39px] w-full flex justify-center cursor-pointer z-10'">
+    <input #input [maxlength]="MAX_TEXT_LEN" [autocomplete]="'off'" [(ngModel)]="text" [ngClass]="'input-text'" type="text" name="text" id="text">
+
+  </div>
+
+  <div [ngClass]="'flex justify-center gap-x-1 absolute -top-1 w-svw text-center text-[2em] font-semibold'">
+    <span [innerHTML]="text | uppercase | validateChar:soletreGame.fullAvailableLetters | safeHtml" [ngClass]="'flex gap-x-1 select-none'"></span>
+    <span [ngClass]="'animate-blinking-cursor text-blue-600 select-none'"> |</span>
+
+  </div>
+
+  <div [ngClass]="'grid grid-rows-3 grid-cols-7 place-items-center h-full w-full'">
+    @for (letter of soletreGame!.fullAvailableLetters; let index = $index; track letter) {
+      <div [ngClass]="[
+      'game',
+      charStyles[index].textColor,
+      charStyles[index].bgColor,
+      charStyles[index].rowStart,
+      charStyles[index].colStart
+
+      ]"
+      (click)="triggerAddChar(letter)"
+      >{{ letter | uppercase }}</div>
+
+    }
+    @empty {
+      <p [ngClass]="'absolute'">Não foi possível carregar o jogo.</p>
+
+    }
+
+  </div>
+
+  <div [ngClass]="'flex items-center justify-evenly w-full'">
+    <button [ngClass]="'btn h-12 w-28.5 rounded-3xl'" (click)="triggerDeleteText()">Apagar</button>
+
+    <button [ngClass]="'btn h-12 w-12 rounded-full'" (click)="triggerShuffleLetters()">
+      <fa-icon [icon]="faRotate"></fa-icon>
+
+    </button>
+
+    <button [ngClass]="'btn h-12 w-28.5 rounded-3xl'" (click)="triggerCheckWordInList()">Confirmar</button>
+
+  </div>
+
+</section>
+
