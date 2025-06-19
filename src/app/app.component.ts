@@ -1,12 +1,6 @@
-import {
-  Component,
-  inject,
-  OnInit
-
-} from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { HeaderComponent } from '@components/header/header.component';
-import { RequestApiService } from '@services/request-api.service';
 
 @Component({
   selector: 'app-root',
@@ -18,14 +12,7 @@ import { RequestApiService } from '@services/request-api.service';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = 'soletre';
-
-  private requestApiService = inject(RequestApiService);
-
-  ngOnInit(): void {
-    this.requestApiService.requestApi();
-
-  }
 
 }
