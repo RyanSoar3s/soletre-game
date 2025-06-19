@@ -17,7 +17,9 @@
       "@models/*": [ "./src/app/models/*" ],
       "@pipes/*": [ "./src/app/pipes/*" ],
       "@services/*": [ "./src/app/services/*" ],
-      "@environments/*": [ "./src/environments/*" ]
+      "@environments/*": [ "./src/environments/*" ],
+      "@guards/*": [ "./src/app/guards/*" ],
+      "@resolvers/*": [ "./src/app/resolvers/*" ],
 
     },
     "importHelpers": true,
