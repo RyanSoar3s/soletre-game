@@ -1,1 +1,23 @@
-<button><a routerLink="soletre/">Clique</a></button>
+<section [ngClass]="'flex flex-col items-center justify-center gap-y-5 h-[400px] w-[300px]'">
+  <div>
+    <div [ngClass]="'h-[120px] w-[120px]'">
+      <img [ngClass]="'h-full w-full pointer-events-none'" [src]="'favicon.png'" [alt]="'logo'">
+
+    </div>
+    <h1 [ngClass]="'font-cookie text-5xl font-medium text-center mt-2!'">Soletre</h1>
+
+  </div>
+
+  <button [ngClass]="'bg-black text-white font-semibold h-[50px] w-[180px] rounded-3xl cursor-pointer hover:bg-[#2b2b2b] transition-all duration-300'">
+    <a [ngClass]="'inline-flex items-center justify-center h-full w-full'" routerLink="soletre/">Jogar</a>
+
+  </button>
+
+  <button [ngClass]="'border-[1px] border-black font-semibold h-[50px] w-[180px] rounded-3xl cursor-pointer'">Créditos</button>
+  <button [ngClass]="'flex justify-evenly w-[150px] font-semibold text-gray-800 hover:text-gray-700 cursor-pointer'">
+    <fa-icon [icon]="faCircleInfo"></fa-icon>
+    <span> Como Jogar?</span>
+
+  </button>
+
+</section>
