@@ -61,7 +61,7 @@ export class GameComponent implements AfterViewInit, AfterContentChecked {
 
   private requestApi = inject(RequestApiService);
 
-  protected readonly pathArrowDownImg = "../../../assets/down.png";
+  protected readonly pathArrowDownImg = "assets/down.png";
 
   protected message: string = "";
   protected text: string = "";
