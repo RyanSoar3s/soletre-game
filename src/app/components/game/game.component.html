@@ -27,7 +27,7 @@
 
     @if (isOpen) {
       <div [ngClass]="'h-[calc(100%-33px)] overflow-y-auto'">
-        @for (word of wordsFound; track $index) {
+        @for (word of soletreGame.words; track $index) {
           <p>{{ word }}</p>
 
       }

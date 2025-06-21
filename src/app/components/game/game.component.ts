@@ -7,7 +7,8 @@ import {
   viewChild,
   AfterViewInit,
   AfterContentChecked,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
 
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -19,6 +20,7 @@ import { TrimPipe } from '@pipes/trim.pipe';
 import { SafeHtmlPipe } from '@pipes/safe-html.pipe';
 import { ValidateCharPipe } from '@pipes/validate-char.pipe';
 import { RequestApiService } from '@services/request-api.service';
+import { GameService } from '@services/game.service';
 import {
   trigger,
   style,
@@ -27,6 +29,7 @@ import {
   state
 
 } from '@angular/animations';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-game',
@@ -59,7 +62,8 @@ import {
 export class GameComponent implements AfterViewInit, AfterContentChecked {
   input = viewChild<ElementRef<HTMLInputElement>>("input");
 
-  private requestApi = inject(RequestApiService);
+  private requestApiService = inject(RequestApiService);
+  private gameService = inject(GameService);
 
   protected readonly pathArrowDownImg = "assets/down.png";
 
@@ -80,9 +84,7 @@ export class GameComponent implements AfterViewInit, AfterContentChecked {
 
   protected isAnimate: boolean = false;
 
-  protected readonly wordsFound: Array<string> = [];
-
-  protected totalWordsFound = 0;
+  protected totalWordsFound!: number;
 
   protected readonly faRotate = faRotate;
 
@@ -91,18 +93,17 @@ export class GameComponent implements AfterViewInit, AfterContentChecked {
   private trim = new TrimPipe();
   private validateChar = new ValidateCharPipe();
 
+  constructor(private cdr: ChangeDetectorRef) {}
+
   ngAfterViewInit(): void {
     this.input()?.nativeElement.disabled;
 
   }
 
   ngAfterContentChecked(): void {
-    if (this.requestApi.getSoletreGame() && !this.soletreGame) {
-      this.soletreGame = this.requestApi.getSoletreGame();
-      this.soletreGame.words = this.soletreGame.words.sort();
-      const start = this.soletreGame.availableLetters.slice(0, 3);
-      const end = this.soletreGame.availableLetters.slice(3);
-      this.soletreGame.fullAvailableLetters = start + this.soletreGame.center + end;
+    if (this.gameService.getGame() && !this.soletreGame) {
+      this.soletreGame = this.gameService.getGame() as SoletreGame;
+      this.totalWordsFound = this.soletreGame.words.length;
 
     }
 
@@ -131,60 +132,69 @@ export class GameComponent implements AfterViewInit, AfterContentChecked {
 
   }
 
-  triggerCheckWordInList(): void {
-    const text = this.text;
+  async triggerCheckWordInList(): Promise<void> {
+    const text = this.validateChar.normalizeString(this.text);
 
     this.isAnimate = true;
     this.text = "";
-    this.message = "Palavra não encontrada";
 
-    if (!text || text.length < 3) {
+    if (text.length < 3) {
       this.message = "A palavra deve ter pelo menos 4 letras.";
       return;
 
     }
+    const centerChar = this.validateChar.normalizeString(this.soletreGame.center);
 
-    if (!text.includes(this.soletreGame.center)) {
+    if (!text.includes(centerChar)) {
       this.message = "A palavra deve conter a letra central.";
       return;
 
     }
 
-    else if (Array.from(text).every(char =>
-      !this.soletreGame.availableLetters.includes(char) && char !== this.soletreGame.center)) {
+    if (Array.from(text).some(char => {
+      const normalizedChar = this.validateChar.normalizeString(char);
+      return !this.soletreGame.availableLetters.includes(normalizedChar) && normalizedChar !== centerChar;
+
+    })) {
       this.message = "A palavra deve conter apenas as letras disponíveis.";
       return;
 
     }
 
-    const normalizedText = this.validateChar.normalizeString(text);
-    const wordFound = this.soletreGame.words.find(el =>
-    this.validateChar.normalizeString(el) === normalizedText);
+    try {
+      this.isAnimate = false;
+      const data = await firstValueFrom(this.requestApiService.requestCheckWordApi(text));
 
-    if (wordFound) {
-      if (!this.wordsFound.includes(wordFound)) {
-        this.wordsFound.push(wordFound);
-        this.wordsFound.sort();
-        this.totalWordsFound++;
-
-        if (this.soletreGame.words.length === this.totalWordsFound) {
-          this.message = "Parabéns, todas as palavras foram encontradas!";
-
-        }
-        else this.message = "Palavra encontrada";
-
-      } else {
-
-        this.message = "Palavra já encontrada";
+      if (!data.valid) {
+        this.message = "Palavra não encontrada.";
 
       }
+      else if (this.soletreGame.words.includes(text)) {
+        this.message = "Palavra já encontrada!";
+
+      }
+      else {
+        this.message = "Palavra encontrada!";
+        this.soletreGame.words.push(data.word as string);
+        this.soletreGame.words.sort();
+        this.gameService.updateGame(this.soletreGame);
+        this.totalWordsFound++;
+
+      }
+      this.isAnimate = true;
+      this.cdr.detectChanges();
+
+    }
+    catch {
+      this.message = "Erro ao verificar a palavra.";
+      return;
 
     }
 
   }
 
   triggerShuffleLetters(): void {
-    const charList = this.soletreGame.availableLetters.split("");
+    let charList = [ ...this.soletreGame.availableLetters as Array<string> ];
 
     for (let i = charList.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -192,10 +202,9 @@ export class GameComponent implements AfterViewInit, AfterContentChecked {
 
     }
 
-    const charString = charList.join("");
-    const start = charString.slice(0, 3);
-    const end = charString.slice(3);
-    this.soletreGame.fullAvailableLetters = start + this.soletreGame.center + end;
+    charList.splice(3, 0, this.soletreGame.center);
+    this.soletreGame.fullAvailableLetters = charList;
+    this.gameService.updateGame(this.soletreGame);
 
   }
 
