@@ -1,6 +1,0 @@
-@reference "tailwindcss";
-
-:host {
-  @apply bg-blue-600 flex flex-col items-center justify-center h-lvh w-lvw select-none;
-
-}
