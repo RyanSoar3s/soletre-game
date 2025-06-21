@@ -1,0 +1,39 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "outDir": "./dist/out-tsc",
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "bundler",
+    "paths": {
+      "@components/*": [ "./src/app/components/*" ],
+      "@models/*": [ "./src/app/models/*" ],
+      "@pipes/*": [ "./src/app/pipes/*" ],
+      "@services/*": [ "./src/app/services/*" ],
+      "@environments/*": [ "./src/environments/*" ],
+      "@guards/*": [ "./src/app/guards/*" ],
+      "@resolvers/*": [ "./src/app/resolvers/*" ],
+
+    },
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "esnext"
+  },
+  "ts-node": {
+    "esm": true
+
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  }
+}
