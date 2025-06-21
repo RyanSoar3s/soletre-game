@@ -5,9 +5,9 @@ import { TrimPipe } from './trim.pipe';
   name: 'validateChar'
 })
 export class ValidateCharPipe implements PipeTransform {
-  transform(value: string, chars: string): [ string, Array<string> ] {
+  transform(value: string, chars: string | Array<string>): [ string, Array<string> ] {
     const classNameArray: Array<string> = [];
-    const charList = chars.split("");
+    const charList = (typeof chars === "string") ? chars.split("") : chars;
     let className: string = "l-invalid";
 
     const trim = new TrimPipe();
