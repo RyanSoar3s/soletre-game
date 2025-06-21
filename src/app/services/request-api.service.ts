@@ -2,21 +2,20 @@ import { inject, Injectable } from '@angular/core';
 import { SoletreGame } from '@models/soletre-game.model';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@environments/environment';
-
+import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
 export class RequestApiService {
-  private soletreGame!: SoletreGame;
   private http = inject(HttpClient);
 
-  requestApi(): void {
-    this.http.get(`${environment.apiUrl}/api/wordlist`).subscribe((data) => this.soletreGame = data as SoletreGame);
+  requestSoletreGameApi(): Observable<SoletreGame> {
+    return this.http.get(`${environment.apiUrl}/api/wordlist`) as Observable<SoletreGame>;
 
   }
 
-  getSoletreGame(): SoletreGame {
-    return this.soletreGame;
+  requestCheckWordApi(word: string): Observable<{ valid: boolean, word: string | undefined }> {
+    return this.http.post(`${environment.apiUrl}/api/wordlist/check-word`, { word }) as Observable<{ valid: boolean, word: string | undefined }>;
 
   }
 
