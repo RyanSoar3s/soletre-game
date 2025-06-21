@@ -5,7 +5,7 @@ import cors from 'cors'
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import bootstrap from './main.server';
-import getSoletreGame from './api';
+import { getSoletreGame, checkWordInList } from './api';
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 const browserDistFolder = resolve(serverDistFolder, '../browser');
@@ -15,12 +15,26 @@ const app = express();
 const commonEngine = new CommonEngine();
 
 app.use(cors({
-  origin: process.env["ORIGIN"] || "http://localhost:4200"
+  origin: process.env["ORIGIN"] || "http://localhost:4200",
+  credentials: true
 
 }));
 
+app.use(express.json());
+
 app.get("/api/wordlist", (_, res) => {
   res.send(getSoletreGame());
+
+});
+
+app.post("/api/wordlist/check-word", (req, res) => {
+  const { word } = req.body;
+  const [ isValid, str ] = checkWordInList(word);
+  res.json({
+    valid: isValid,
+    word: str
+
+  });
 
 });
 
