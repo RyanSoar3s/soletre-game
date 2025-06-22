@@ -1,5 +1,5 @@
-import { join } from 'path';
+export default async (req, res) => {
+  const { app } = await import("../dist/soletre/server.mjs");
+  return app(req, res);
 
-const serverDistPath = join(process.cwd(), "../dist/soletre/server/server.mjs");
-
-export default import(serverDistPath).then((module) => module.app);
+};
