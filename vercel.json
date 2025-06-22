@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "public": true,
+  "name": "soletre",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/api"
+
+    }
+
+  ],
+  "functions": {
+    "api/index.js": {
+      "includeFiles": "dist/soletre/**"
+
+    }
+
+  }
+
+}
