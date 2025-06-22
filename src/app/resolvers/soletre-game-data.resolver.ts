@@ -19,7 +19,8 @@ export const soletreGameDataResolver: ResolveFn<void> = () => {
   if (gameService.getGame()?.date !== date) gameService.clearGame();
 
   requestApiService.requestSoletreGameApi().subscribe((data) => {
-    gameService.saveGame(data);
+    console.log(data.message);
+    gameService.saveGame(data.game);
 
   });
 

@@ -9,8 +9,8 @@ import { Observable } from 'rxjs';
 export class RequestApiService {
   private http = inject(HttpClient);
 
-  requestSoletreGameApi(): Observable<SoletreGame> {
-    return this.http.get(`${environment.apiUrl}/api/wordlist`) as Observable<SoletreGame>;
+  requestSoletreGameApi(): Observable<{ message: string, game: SoletreGame }> {
+    return this.http.get(`${environment.apiUrl}/api/wordlist`) as Observable<{ message: string, game: SoletreGame }>;
 
   }
 

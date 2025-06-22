@@ -23,7 +23,11 @@ app.use(cors({
 app.use(express.json());
 
 app.get("/api/wordlist", (_, res) => {
-  res.send(getSoletreGame());
+  res.json({
+    message: "soletre game started successfully",
+    game: getSoletreGame()
+
+  });
 
 });
 
