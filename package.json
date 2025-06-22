@@ -5,7 +5,6 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "vercel-build": "ng build && node dist/soletre/server/server.mjs",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:soletre": "nodemon --watch --inspect=4000 dist/soletre/server/server.mjs"
