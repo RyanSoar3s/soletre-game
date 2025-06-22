@@ -1,5 +1,5 @@
 import { APP_BASE_HREF } from '@angular/common';
-import { CommonEngine, isMainModule } from '@angular/ssr/node';
+import { CommonEngine } from '@angular/ssr/node';
 import express from 'express';
 import cors from 'cors'
 import { dirname, join, resolve } from 'node:path';
