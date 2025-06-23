@@ -5,7 +5,14 @@ import cors from 'cors'
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import bootstrap from './main.server';
-import { getSoletreGame, checkWordInList } from './api';
+import { createClient, RedisClientType } from 'redis';
+import {
+  isReset,
+  words,
+  getSoletreGame,
+  checkWordInList
+
+} from './api';
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 const browserDistFolder = resolve(serverDistFolder, '../browser');
@@ -13,6 +20,24 @@ const indexHtml = join(serverDistFolder, 'index.server.html');
 
 export const app = express();
 const commonEngine = new CommonEngine();
+
+let client: RedisClientType | null = null;
+
+const redisClient = async () => {
+  if (!client) {
+    client = createClient({
+      url: process.env["REDIS_URL"] || "redis://127.0.0.1:6379?appendonly=yes&appendfsync=everysec"
+
+    });
+    client.on("connect", () => console.log("Redis connected"));
+    client.on("error", (error) => console.log(error));
+    await client.connect();
+
+  }
+
+}
+
+redisClient();
 
 app.use(cors({
   origin: process.env["ORIGIN"] || "http://localhost:4200",
@@ -22,10 +47,20 @@ app.use(cors({
 
 app.use(express.json());
 
-app.get("/api/wordlist", (_, res) => {
+app.get("/api/wordlist", async (_, res) => {
+  const game = await client?.get("data:soletre-game");
+  const wordsArray = await client?.get("data:words");
+  const data = getSoletreGame(game, wordsArray);
+
+  if (isReset) {
+    await client?.set("data:soletre-game", JSON.stringify(data));
+    await client?.set("data:words", JSON.stringify(words));
+
+  }
+
   res.json({
     message: "soletre game started successfully",
-    game: getSoletreGame()
+    game: data
 
   });
 

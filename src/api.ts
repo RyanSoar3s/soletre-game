@@ -4,6 +4,7 @@ import { ValidateCharPipe } from '@pipes/validate-char.pipe';
 
 let soletreGameData!: SoletreGame;
 let words: Array<string> = [];
+let isReset = false;
 const validateCharPipe = new ValidateCharPipe();
 
 function generateSoletreGame(): void {
@@ -23,9 +24,28 @@ function generateSoletreGame(): void {
 
 }
 
-function getSoletreGame(): SoletreGame {
-  if (!soletreGameData || soletreGameData.date !== new Date().getDate()) {
+function getSoletreGame(data: string | null | undefined = undefined, wordsArray: string | null | undefined = undefined): SoletreGame {
+  if (data) {
+    const game = JSON.parse(data) as SoletreGame;
+
+    if (game.date !== new Date().getDate()) {
+      generateSoletreGame()
+      isReset = true;
+
+    }
+
+    else {
+      soletreGameData = game;
+      words.push(...JSON.parse(wordsArray!));
+      isReset = false;
+
+    }
+
+  }
+
+  else if (!soletreGameData || soletreGameData.date !== new Date().getDate()) {
     generateSoletreGame();
+    isReset = true;
 
   }
   return soletreGameData;
@@ -40,6 +60,8 @@ function checkWordInList(word: string): [ boolean, string | undefined ] {
 }
 
 export {
+  isReset,
+  words,
   getSoletreGame,
   checkWordInList
 

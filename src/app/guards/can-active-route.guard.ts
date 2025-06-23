@@ -1,12 +1,12 @@
 import { CanActivateFn } from '@angular/router';
 import { inject } from '@angular/core';
-import { GameService } from '@services/game.service';
 import { Router } from '@angular/router';
+import { LocalStorageService } from '@services/local-storage.service';
 
 export const canActiveRouteGuard: CanActivateFn = () => {
   const router = inject(Router);
-  const gameService = inject(GameService);
-  const isGameSaved = gameService.isGameSaved();
+  const localStorageService = inject(LocalStorageService);
+  let isGameSaved = localStorageService.hasItem("SoletreGame");
 
   if (!isGameSaved) {
     router.navigate(['/']);

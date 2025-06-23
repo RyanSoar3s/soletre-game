@@ -20,7 +20,8 @@ import { TrimPipe } from '@pipes/trim.pipe';
 import { SafeHtmlPipe } from '@pipes/safe-html.pipe';
 import { ValidateCharPipe } from '@pipes/validate-char.pipe';
 import { RequestApiService } from '@services/request-api.service';
-import { GameService } from '@services/game.service';
+import { LocalStorageService } from '@services/local-storage.service';
+import { SoletreGameService } from '@services/soletre-game.service';
 import {
   trigger,
   style,
@@ -63,7 +64,8 @@ export class GameComponent implements AfterViewInit, AfterContentChecked {
   input = viewChild<ElementRef<HTMLInputElement>>("input");
 
   private requestApiService = inject(RequestApiService);
-  private gameService = inject(GameService);
+  private localStorageService = inject(LocalStorageService);
+  private soletreGameService = inject(SoletreGameService);
 
   protected readonly pathArrowDownImg = "assets/down.png";
 
@@ -101,8 +103,13 @@ export class GameComponent implements AfterViewInit, AfterContentChecked {
   }
 
   ngAfterContentChecked(): void {
-    if (this.gameService.getGame() && !this.soletreGame) {
-      this.soletreGame = this.gameService.getGame() as SoletreGame;
+    const isGameExist = this.localStorageService.getItem("SoletreGame");
+
+    if (isGameExist && !this.soletreGame) {
+      this.soletreGame = this.soletreGameService.getSoletreGame("SoletreGame");
+      const letters = [ ...this.soletreGame.availableLetters ];
+      letters.splice(3, 0, this.soletreGame.center);
+      this.soletreGame.fullAvailableLetters = letters;
       this.totalWordsFound = this.soletreGame.words.length;
 
     }
@@ -177,7 +184,9 @@ export class GameComponent implements AfterViewInit, AfterContentChecked {
         this.message = "Palavra encontrada!";
         this.soletreGame.words.push(data.word as string);
         this.soletreGame.words.sort();
-        this.gameService.updateGame(this.soletreGame);
+
+        const soletreGameStringify = this.soletreGameService.formatSoletreGameValue(this.soletreGame)
+        this.localStorageService.updateItem("SoletreGame", soletreGameStringify);
         this.totalWordsFound++;
 
       }
@@ -204,7 +213,9 @@ export class GameComponent implements AfterViewInit, AfterContentChecked {
 
     charList.splice(3, 0, this.soletreGame.center);
     this.soletreGame.fullAvailableLetters = charList;
-    this.gameService.updateGame(this.soletreGame);
+
+    const soletreGameStringify = this.soletreGameService.formatSoletreGameValue(this.soletreGame)
+    this.localStorageService.updateItem("SoletreGame", soletreGameStringify);
 
   }
 

@@ -2,26 +2,42 @@ import { ResolveFn } from '@angular/router';
 import { inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { RequestApiService } from '@services/request-api.service';
-import { GameService } from '@services/game.service';
+import { LocalStorageService } from '@services/local-storage.service';
+import { SoletreGameService } from '@services/soletre-game.service';
+import { of, take, tap, map, catchError } from 'rxjs';
 
 export const soletreGameDataResolver: ResolveFn<void> = () => {
   const platformId = inject(PLATFORM_ID);
-  if (!isPlatformBrowser(platformId)) return;
+  if (!isPlatformBrowser(platformId)) return of(undefined);
 
-  const gameService = inject(GameService);
-  const isGameSaved = gameService.isGameSaved();
-
+  const localStorageService = inject(LocalStorageService);
+  const soletreGameService = inject(SoletreGameService);
   const requestApiService = inject(RequestApiService);
-  const date = new Date().getDate();
 
-  if (isGameSaved && gameService.getGame()?.date === date) return;
+  const today = new Date().getDate();
+  const saved = localStorageService.getItem("SoletreGame");
+  const soletre = soletreGameService.getSoletreGame("SoletreGame");
 
-  if (gameService.getGame()?.date !== date) gameService.clearGame();
+  if (saved && soletre?.date === today) {
+    return of(undefined);
 
-  requestApiService.requestSoletreGameApi().subscribe((data) => {
-    console.log(data.message);
-    gameService.saveGame(data.game);
+  }
 
-  });
+  if (soletre?.date !== today) {
+    localStorageService.clearAll();
+
+  }
+
+  return requestApiService.requestSoletreGameApi().pipe(
+    take(1),
+    tap((data) => {
+      const str = soletreGameService.formatSoletreGameValue(data.game);
+      localStorageService.saveItem("SoletreGame", str);
+
+    }),
+    map(() => undefined),
+    catchError(() => of(undefined))
+
+  );
 
 };
