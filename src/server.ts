@@ -35,9 +35,9 @@ const redisClient = async () => {
 
   }
 
-}
+  return client;
 
-redisClient();
+}
 
 app.use(cors({
   origin: process.env["ORIGIN"] || "http://localhost:4200",
@@ -48,13 +48,14 @@ app.use(cors({
 app.use(express.json());
 
 app.get("/api/wordlist", async (_, res) => {
-  const game = await client?.get("data:soletre-game");
-  const wordsArray = await client?.get("data:words");
+  const redis = await redisClient();
+  const game = await redis.get("data:soletre-game");
+  const wordsArray = await redis.get("data:words");
   const data = getSoletreGame(game, wordsArray);
 
   if (isReset) {
-    await client?.set("data:soletre-game", JSON.stringify(data));
-    await client?.set("data:words", JSON.stringify(words));
+    await redis.set("data:soletre-game", JSON.stringify(data));
+    await redis.set("data:words", JSON.stringify(words));
 
   }
 
