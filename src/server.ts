@@ -53,7 +53,7 @@ app.get("/api/wordlist", async (_, res) => {
   const wordsArray = await redis.get("data:words");
   const data = getSoletreGame(game, wordsArray);
 
-  if (isReset) {
+  if (!game || isReset) {
     await redis.set("data:soletre-game", JSON.stringify(data));
     await redis.set("data:words", JSON.stringify(words));
 
