@@ -16,6 +16,10 @@
             "outputPath": "dist/soletre",
             "index": "src/index.html",
             "browser": "src/main.ts",
+            "allowedCommonJsDependencies": [
+              "redis"
+
+            ],
             "externalDependencies": [
               "cors"
 
