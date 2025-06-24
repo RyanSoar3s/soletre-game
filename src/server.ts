@@ -62,7 +62,7 @@ app.get("/api/wordlist", async (_, res) => {
 
     return res.json({
       message: "Game already started.",
-      game
+      game: game![1]
 
     });
 
@@ -70,7 +70,7 @@ app.get("/api/wordlist", async (_, res) => {
     return res.json({
       message: "An error occurred while loading the soletre game.",
       error: err,
-      game
+      game: game![1]
 
     });
 
