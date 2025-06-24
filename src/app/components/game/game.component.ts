@@ -145,7 +145,7 @@ export class GameComponent implements AfterViewInit, AfterContentChecked {
     this.isAnimate = true;
     this.text = "";
 
-    if (text.length < 3) {
+    if (text.length < 4) {
       this.message = "A palavra deve ter pelo menos 4 letras.";
       return;
 
