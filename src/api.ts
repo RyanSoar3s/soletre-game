@@ -9,19 +9,19 @@ const validateCharPipe = new ValidateCharPipe();
 function createNewSoletreGame(): SoletreGame {
   const today = new Date().getDate();
   const index = Math.floor(Math.random() * wordlist.length);
-  const { center, fullAvailableLetters, availableLetters, words: wordSet } = wordlist[index];
+  const soletreGame = wordlist[index] as SoletreGame;
 
-  words.push(...wordSet);
+  words.push(...soletreGame.words);
 
   return {
     words: [],
-    center,
-    fullAvailableLetters,
-    availableLetters,
+    center: soletreGame.center,
+    fullAvailableLetters: soletreGame.fullAvailableLetters,
+    availableLetters: soletreGame.availableLetters,
     date: today
 
   };
-  
+
 }
 
 async function loadSoletreGame(redis: RedisClientType): Promise<SoletreGame> {
