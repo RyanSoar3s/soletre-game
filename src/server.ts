@@ -1,18 +1,13 @@
 import { APP_BASE_HREF } from '@angular/common';
-import { CommonEngine } from '@angular/ssr/node';
+import { CommonEngine, isMainModule } from '@angular/ssr/node';
 import express from 'express';
 import cors from 'cors'
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import bootstrap from './main.server';
 import { createClient, RedisClientType } from 'redis';
-import {
-  isReset,
-  words,
-  getSoletreGame,
-  checkWordInList
-
-} from './api';
+import { loadSoletreGame, checkWordInList } from './api';
+import { SoletreGame } from '@models/soletre-game.model';
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 const browserDistFolder = resolve(serverDistFolder, '../browser');
@@ -22,6 +17,7 @@ export const app = express();
 const commonEngine = new CommonEngine();
 
 let client: RedisClientType | null = null;
+let game: SoletreGame | null = null;
 
 const redisClient = async () => {
   if (!client) {
@@ -48,20 +44,32 @@ app.use(cors({
 app.use(express.json());
 
 app.get("/api/wordlist", async (_, res) => {
-  const redis = await redisClient();
-  const game = await redis.get("data:soletre-game");
-  const wordsArray = await redis.get("data:words");
-  const data = getSoletreGame(game, wordsArray);
+  if (!client) {
+    try {
+      const redis = await redisClient();
+      await loadSoletreGame(redis).then((soletreGame) => game = soletreGame);
 
-  if (!game || isReset) {
-    await redis.set("data:soletre-game", JSON.stringify(data));
-    await redis.set("data:words", JSON.stringify(words));
+      return res.json({
+        message: "Soletre game started successfully",
+        game: game
+
+      });
+
+    } catch (err) {
+      return res.json({
+        message: "The soletre game could not be loaded.",
+        game: null,
+        error: err
+
+      });
+
+    }
 
   }
 
-  res.json({
-    message: "soletre game started successfully",
-    game: data
+  return res.json({
+    message: "Game already started.",
+    game: game
 
   });
 
@@ -69,10 +77,11 @@ app.get("/api/wordlist", async (_, res) => {
 
 app.post("/api/wordlist/check-word", (req, res) => {
   const { word } = req.body;
-  const [ isValid, str ] = checkWordInList(word);
+  const wordsInfo = checkWordInList(word);
+
   res.json({
-    valid: isValid,
-    word: str
+    isValid: wordsInfo.found,
+    word: wordsInfo.value ?? ""
 
   });
 
@@ -116,11 +125,11 @@ app.get('**', (req, res, next) => {
  * Start the server if this module is the main entry point.
  * The server listens on the port defined by the `PORT` environment variable, or defaults to 4000.
  */
-// if (isMainModule(import.meta.url)) {
-//   const port = process.env['PORT'] || 4000;
-//   app.listen(port, () => {
-//     console.log(`Node Express server listening on http://localhost:${port}`);
-//   });
-// }
+if (isMainModule(import.meta.url)) {
+  const port = process.env['PORT'] || 4000;
+  app.listen(port, () => {
+    console.log(`Node Express server listening on http://localhost:${port}`);
+  });
+}
 
 export default app;

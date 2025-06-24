@@ -19,6 +19,7 @@ export const soletreGameDataResolver: ResolveFn<void> = () => {
   const soletre = soletreGameService.getSoletreGame("SoletreGame");
 
   if (saved && soletre?.date === today) {
+    console.log("Game already started.")
     return of(undefined);
 
   }
@@ -31,12 +32,22 @@ export const soletreGameDataResolver: ResolveFn<void> = () => {
   return requestApiService.requestSoletreGameApi().pipe(
     take(1),
     tap((data) => {
-      const str = soletreGameService.formatSoletreGameValue(data.game);
+      if (!data.game) {
+        console.error(data.message);
+        throw data.error;
+
+      }
+      console.log(data.message);
+      const str = soletreGameService.formatSoletreGameValue(data.game!);
       localStorageService.saveItem("SoletreGame", str);
 
     }),
     map(() => undefined),
-    catchError(() => of(undefined))
+    catchError((err) => {
+      console.error(err);
+      return of(undefined);
+
+    })
 
   );
 

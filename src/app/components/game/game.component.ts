@@ -172,7 +172,7 @@ export class GameComponent implements AfterViewInit, AfterContentChecked {
       this.isAnimate = false;
       const data = await firstValueFrom(this.requestApiService.requestCheckWordApi(text));
 
-      if (!data.valid) {
+      if (!data.isValid) {
         this.message = "Palavra não encontrada.";
 
       }

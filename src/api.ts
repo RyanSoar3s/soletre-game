@@ -1,68 +1,73 @@
 import { SoletreGame } from '@models/soletre-game.model';
 import wordlist from './api/wordlist.json' with { type: "json" };
 import { ValidateCharPipe } from '@pipes/validate-char.pipe';
+import { RedisClientType } from 'redis';
 
-let soletreGameData!: SoletreGame;
 let words: Array<string> = [];
-let isReset = false;
 const validateCharPipe = new ValidateCharPipe();
 
-function generateSoletreGame(): void {
-  const date = new Date().getDate();
-  const index: number = Math.floor(Math.random() * wordlist.length % wordlist.length);
-  const wordlistInfo = wordlist[index] as SoletreGame;
-  words = wordlistInfo.words;
+function createNewSoletreGame(): SoletreGame {
+  const today = new Date().getDate();
+  const index = Math.floor(Math.random() * wordlist.length);
+  const { center, fullAvailableLetters, availableLetters, words: wordSet } = wordlist[index];
 
-  soletreGameData = {
+  words.push(...wordSet);
+
+  return {
     words: [],
-    center: wordlistInfo.center,
-    fullAvailableLetters: wordlistInfo.fullAvailableLetters,
-    availableLetters: wordlistInfo.availableLetters,
-    date: date
+    center,
+    fullAvailableLetters,
+    availableLetters,
+    date: today
 
   };
-
+  
 }
 
-function getSoletreGame(data: string | null | undefined = undefined, wordsArray: string | null | undefined = undefined): SoletreGame {
-  if (data) {
-    const game = JSON.parse(data) as SoletreGame;
+async function loadSoletreGame(redis: RedisClientType): Promise<SoletreGame> {
+  const [ soletreGameStr, wordsStr ] = await Promise.all([
+    redis.get("data:soletre-game"),
+    redis.get("data:words")
 
-    if (game.date !== new Date().getDate()) {
-      generateSoletreGame()
-      isReset = true;
+  ]);
+
+  if (soletreGameStr || wordsStr) {
+    let soletreGame = JSON.parse(soletreGameStr!) as SoletreGame;
+
+    if (soletreGame.date !== new Date().getDate()) {
+      soletreGame = createNewSoletreGame();
+      await saveSoletreGame(redis, soletreGame);
 
     }
 
-    else {
-      soletreGameData = game;
-      words.push(...JSON.parse(wordsArray!));
-      isReset = false;
-
-    }
+    return soletreGame;
 
   }
 
-  else if (!soletreGameData || soletreGameData.date !== new Date().getDate()) {
-    generateSoletreGame();
-    isReset = true;
-
-  }
-  return soletreGameData;
+  const newSoletreGame = createNewSoletreGame();
+  await saveSoletreGame(redis, newSoletreGame);
+  return newSoletreGame;
 
 }
 
-function checkWordInList(word: string): [ boolean, string | undefined ] {
-  const normalizedWord = validateCharPipe.normalizeString(word.toLowerCase());
-  const res = words.find((w) => validateCharPipe.normalizeString(w) === normalizedWord);
-  return [ !!res, res ];
+async function saveSoletreGame(redis: RedisClientType, game: SoletreGame): Promise<void> {
+  await redis.set("data:soletre-game", JSON.stringify(game));
+  await redis.set("data:words", JSON.stringify(words));
+
+}
+
+function checkWordInList(word: string): { found: boolean, value: string | undefined } {
+  const normalized = validateCharPipe.normalizeString(word.toLowerCase());
+  const found = words.find(w =>
+    validateCharPipe.normalizeString(w) === normalized
+
+  );
+  return { found: !!found, value: found };
 
 }
 
 export {
-  isReset,
-  words,
-  getSoletreGame,
+  loadSoletreGame,
   checkWordInList
 
 };
