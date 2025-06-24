@@ -44,7 +44,7 @@ app.use(cors({
 app.use(express.json());
 
 app.get("/api/wordlist", async (_, res) => {
-  if (!client) {
+  if (!client || !game) {
     try {
       const redis = await redisClient();
       await loadSoletreGame(redis).then((soletreGame) => game = soletreGame);

@@ -9,7 +9,7 @@ const validateCharPipe = new ValidateCharPipe();
 function createNewSoletreGame(): SoletreGame {
   const today = new Date().getDate();
   const index = Math.floor(Math.random() * wordlist.length);
-  const soletreGame = wordlist[index] as SoletreGame;
+  const soletreGame = wordlist[index] as Omit<SoletreGame, "date">;
 
   words.push(...soletreGame.words);
 
