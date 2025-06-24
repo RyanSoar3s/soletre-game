@@ -176,7 +176,7 @@ export class GameComponent implements AfterViewInit, AfterContentChecked {
         this.message = "Palavra não encontrada.";
 
       }
-      else if (this.soletreGame.words.includes(text)) {
+      else if (this.soletreGame.words.find((w) => this.validateChar.normalizeString(w) === text)) {
         this.message = "Palavra já encontrada!";
 
       }
