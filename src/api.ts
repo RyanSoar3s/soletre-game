@@ -50,6 +50,16 @@ async function loadSoletreGame(redis: RedisClientType): Promise<SoletreGame> {
 
 }
 
+async function loadWords(redis: RedisClientType): Promise<void> {
+  await redis.get("data:words").then((dataWords) => words = JSON.parse(dataWords!));
+
+}
+
+function hasWords(): boolean {
+  return words.length > 0;
+
+}
+
 async function saveSoletreGame(redis: RedisClientType, game: SoletreGame): Promise<void> {
   await redis.set("data:soletre-game", JSON.stringify(game));
   await redis.set("data:words", JSON.stringify(words));
@@ -68,6 +78,8 @@ function checkWordInList(word: string): { found: boolean, value: string | undefi
 
 export {
   loadSoletreGame,
-  checkWordInList
+  checkWordInList,
+  hasWords,
+  loadWords
 
 };

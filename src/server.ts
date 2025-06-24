@@ -6,7 +6,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import bootstrap from './main.server';
 import { createClient, RedisClientType } from 'redis';
-import { loadSoletreGame, checkWordInList } from './api';
+import { loadSoletreGame, checkWordInList, hasWords, loadWords } from './api';
 import { SoletreGame } from '@models/soletre-game.model';
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
@@ -44,10 +44,10 @@ app.use(cors({
 app.use(express.json());
 
 app.get("/api/wordlist", async (_, res) => {
-  if (!client || !game) {
+  if (!client) {
     try {
-      const redis = await redisClient();
-      await loadSoletreGame(redis).then((soletreGame) => game = soletreGame);
+      client = await redisClient();
+      await loadSoletreGame(client).then((soletreGame) => game = soletreGame);
 
       return res.json({
         message: "Soletre game started successfully",
@@ -64,6 +64,11 @@ app.get("/api/wordlist", async (_, res) => {
       });
 
     }
+
+  }
+
+  if (!hasWords()) {
+    await loadWords(client);
 
   }
 
