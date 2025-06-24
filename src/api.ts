@@ -34,7 +34,7 @@ async function loadSoletreGame(redis: RedisClientType): Promise<SoletreGame> {
   if (soletreGameStr || wordsStr) {
     let soletreGame = JSON.parse(soletreGameStr!) as SoletreGame;
 
-    if (soletreGame.date !== new Date().getDate()) {
+    if (isUpdate(soletreGame.date)) {
       soletreGame = createNewSoletreGame();
       await saveSoletreGame(redis, soletreGame);
 
@@ -66,6 +66,11 @@ async function saveSoletreGame(redis: RedisClientType, game: SoletreGame): Promi
 
 }
 
+function isUpdate(today: number): boolean {
+  return today !== new Date().getDate();
+
+}
+
 function checkWordInList(word: string): { found: boolean, value: string | undefined } {
   const normalized = validateCharPipe.normalizeString(word.toLowerCase());
   const found = words.find(w =>
@@ -80,6 +85,7 @@ export {
   loadSoletreGame,
   checkWordInList,
   hasWords,
-  loadWords
+  loadWords,
+  isUpdate
 
 };

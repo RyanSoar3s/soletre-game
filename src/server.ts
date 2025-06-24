@@ -6,7 +6,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import bootstrap from './main.server';
 import { createClient, RedisClientType } from 'redis';
-import { loadSoletreGame, checkWordInList, hasWords, loadWords } from './api';
+import { loadSoletreGame, checkWordInList, hasWords, loadWords, isUpdate } from './api';
 import { SoletreGame } from '@models/soletre-game.model';
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
@@ -44,40 +44,43 @@ app.use(cors({
 app.use(express.json());
 
 app.get("/api/wordlist", async (_, res) => {
-  if (!client) {
-    try {
+  try {
+    if (!client) {
       client = await redisClient();
-      await loadSoletreGame(client).then((soletreGame) => game = soletreGame);
 
+    }
+
+    if (!game || isUpdate(game.date)) {
+      game = await loadSoletreGame(client);
       return res.json({
         message: "Soletre game started successfully",
-        game: game
-
-      });
-
-    } catch (err) {
-      return res.json({
-        message: "The soletre game could not be loaded.",
-        game: null,
-        error: err
+        game
 
       });
 
     }
 
+    if (!hasWords()) {
+      await loadWords(client);
+
+    }
+
+    return res.json({
+      message: "Game already started.",
+      game
+
+    });
+
+  } catch (err) {
+    return res.json({
+      message: "An error occurred while loading the soletre game.",
+      error: err,
+      game
+
+    });
+
   }
-
-  if (!hasWords()) {
-    await loadWords(client);
-
-  }
-
-  return res.json({
-    message: "Game already started.",
-    game: game
-
-  });
-
+  
 });
 
 app.post("/api/wordlist/check-word", (req, res) => {
