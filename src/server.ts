@@ -81,7 +81,8 @@ app.post("/api/wordlist/check-word", (req, res) => {
 
   res.json({
     isValid: wordsInfo.found,
-    word: wordsInfo.value ?? ""
+    word: wordsInfo.value ?? "",
+    words: wordsInfo.words
 
   });
 

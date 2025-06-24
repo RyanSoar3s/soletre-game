@@ -15,8 +15,8 @@ export class RequestApiService {
 
   }
 
-  requestCheckWordApi(word: string): Observable<{ isValid: boolean, word: string | undefined }> {
-    return this.http.post(`${environment.apiUrl}/api/wordlist/check-word`, { word }) as Observable<{ isValid: boolean, word: string | undefined }>;
+  requestCheckWordApi(word: string): Observable<{ isValid: boolean, word: string | undefined, words: string[] }> {
+    return this.http.post(`${environment.apiUrl}/api/wordlist/check-word`, { word }) as Observable<{ isValid: boolean, word: string | undefined, words: string[] }>;
 
   }
 

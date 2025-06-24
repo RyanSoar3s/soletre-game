@@ -21,7 +21,7 @@ function createNewSoletreGame(): SoletreGame {
     date: today
 
   };
-  
+
 }
 
 async function loadSoletreGame(redis: RedisClientType): Promise<SoletreGame> {
@@ -56,13 +56,13 @@ async function saveSoletreGame(redis: RedisClientType, game: SoletreGame): Promi
 
 }
 
-function checkWordInList(word: string): { found: boolean, value: string | undefined } {
+function checkWordInList(word: string): { found: boolean, value: string | undefined, words: string[] } {
   const normalized = validateCharPipe.normalizeString(word.toLowerCase());
   const found = words.find(w =>
     validateCharPipe.normalizeString(w) === normalized
 
   );
-  return { found: !!found, value: found };
+  return { found: !!found, value: found, words };
 
 }
 
