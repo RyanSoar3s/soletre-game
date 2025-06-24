@@ -1,12 +1,12 @@
 import { APP_BASE_HREF } from '@angular/common';
-import { CommonEngine } from '@angular/ssr/node';
+import { CommonEngine, isMainModule } from '@angular/ssr/node';
 import express from 'express';
 import cors from 'cors'
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import bootstrap from './main.server';
 import { createClient, RedisClientType } from 'redis';
-import { loadSoletreGame, checkWordInList, hasWords, loadWords, isUpdate } from './api';
+import { loadSoletreGame, checkWordInList, isUpdate } from './api';
 import { SoletreGame } from '@models/soletre-game.model';
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
@@ -17,7 +17,7 @@ export const app = express();
 const commonEngine = new CommonEngine();
 
 let client: RedisClientType | null = null;
-let game: SoletreGame | null = null;
+let game: [ Array<string>, SoletreGame ] | null = null;
 
 const redisClient = async () => {
   if (!client) {
@@ -50,18 +50,13 @@ app.get("/api/wordlist", async (_, res) => {
 
     }
 
-    if (!game || isUpdate(game.date)) {
-      game = await loadSoletreGame(client);
+    if (!game || isUpdate(game[1].date)) {
+      await loadSoletreGame(client).then((data) => game = data);
       return res.json({
         message: "Soletre game started successfully",
-        game
+        game: game![1]
 
       });
-
-    }
-
-    if (!hasWords()) {
-      await loadWords(client);
 
     }
 
@@ -80,12 +75,12 @@ app.get("/api/wordlist", async (_, res) => {
     });
 
   }
-  
+
 });
 
 app.post("/api/wordlist/check-word", (req, res) => {
   const { word } = req.body;
-  const wordsInfo = checkWordInList(word);
+  const wordsInfo = checkWordInList(word, game![0]);
 
   res.json({
     isValid: wordsInfo.found,
@@ -133,11 +128,11 @@ app.get('**', (req, res, next) => {
  * Start the server if this module is the main entry point.
  * The server listens on the port defined by the `PORT` environment variable, or defaults to 4000.
  */
-// if (isMainModule(import.meta.url)) {
-//   const port = process.env['PORT'] || 4000;
-//   app.listen(port, () => {
-//     console.log(`Node Express server listening on http://localhost:${port}`);
-//   });
-// }
+if (isMainModule(import.meta.url)) {
+  const port = process.env['PORT'] || 4000;
+  app.listen(port, () => {
+    console.log(`Node Express server listening on http://localhost:${port}`);
+  });
+}
 
 export default app;

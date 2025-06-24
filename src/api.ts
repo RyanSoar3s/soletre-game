@@ -3,28 +3,29 @@ import wordlist from './api/wordlist.json' with { type: "json" };
 import { ValidateCharPipe } from '@pipes/validate-char.pipe';
 import { RedisClientType } from 'redis';
 
-let words: Array<string> = [];
 const validateCharPipe = new ValidateCharPipe();
 
-function createNewSoletreGame(): SoletreGame {
+function createNewSoletreGame(): [ Array<string>, SoletreGame ] {
   const today = new Date().getDate();
   const index = Math.floor(Math.random() * wordlist.length);
   const soletreGame = wordlist[index] as Omit<SoletreGame, "date">;
 
-  words.push(...soletreGame.words);
 
-  return {
-    words: [],
-    center: soletreGame.center,
-    fullAvailableLetters: soletreGame.fullAvailableLetters,
-    availableLetters: soletreGame.availableLetters,
-    date: today
+  return [
+    soletreGame.words,
+    {
+      words: [],
+      center: soletreGame.center,
+      fullAvailableLetters: soletreGame.fullAvailableLetters,
+      availableLetters: soletreGame.availableLetters,
+      date: today
 
-  };
+    }
+  ];
 
 }
 
-async function loadSoletreGame(redis: RedisClientType): Promise<SoletreGame> {
+async function loadSoletreGame(redis: RedisClientType): Promise<[ Array<string>, SoletreGame ]> {
   const [ soletreGameStr, wordsStr ] = await Promise.all([
     redis.get("data:soletre-game"),
     redis.get("data:words")
@@ -32,36 +33,27 @@ async function loadSoletreGame(redis: RedisClientType): Promise<SoletreGame> {
   ]);
 
   if (soletreGameStr || wordsStr) {
-    let soletreGame = JSON.parse(soletreGameStr!) as SoletreGame;
+    let [ words, soletreGame ] = [ JSON.parse(wordsStr!) as Array<string>, JSON.parse(soletreGameStr!) as SoletreGame ];
 
     if (isUpdate(soletreGame.date)) {
-      soletreGame = createNewSoletreGame();
-      await saveSoletreGame(redis, soletreGame);
+      [ words, soletreGame ] = createNewSoletreGame();
+      await saveGame(redis, words, soletreGame);
 
     }
 
-    return soletreGame;
+    return [ words, soletreGame ];
 
   }
 
-  const newSoletreGame = createNewSoletreGame();
-  await saveSoletreGame(redis, newSoletreGame);
-  return newSoletreGame;
+  const [ words, soletreGame ] = createNewSoletreGame();
+  await saveGame(redis, words, soletreGame);
+  return [ words, soletreGame ];
 
 }
 
-async function loadWords(redis: RedisClientType): Promise<void> {
-  await redis.get("data:words").then((dataWords) => words = JSON.parse(dataWords!));
 
-}
-
-function hasWords(): boolean {
-  return words.length > 0;
-
-}
-
-async function saveSoletreGame(redis: RedisClientType, game: SoletreGame): Promise<void> {
-  await redis.set("data:soletre-game", JSON.stringify(game));
+async function saveGame(redis: RedisClientType, words: Array<string>, soletreGame: SoletreGame): Promise<void> {
+  await redis.set("data:soletre-game", JSON.stringify(soletreGame));
   await redis.set("data:words", JSON.stringify(words));
 
 }
@@ -71,7 +63,7 @@ function isUpdate(today: number): boolean {
 
 }
 
-function checkWordInList(word: string): { found: boolean, value: string | undefined } {
+function checkWordInList(word: string, words: Array<string>): { found: boolean, value: string | undefined } {
   const normalized = validateCharPipe.normalizeString(word.toLowerCase());
   const found = words.find(w =>
     validateCharPipe.normalizeString(w) === normalized
@@ -84,8 +76,6 @@ function checkWordInList(word: string): { found: boolean, value: string | undefi
 export {
   loadSoletreGame,
   checkWordInList,
-  hasWords,
-  loadWords,
   isUpdate
 
 };
