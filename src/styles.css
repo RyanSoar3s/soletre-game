@@ -1,6 +1,40 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Cookie&display=swap');
 @import "tailwindcss";
+
+@font-face {
+  font-family: "Inter";
+  font-weight: 500;
+  src: url("./fonts/Inter/static/Inter_24pt-Regular.ttf") format("truetype");
+
+}
+
+
+@font-face {
+  font-family: "Inter";
+  font-weight: 600;
+  src: url("./fonts/Inter/static/Inter_24pt-SemiBold.ttf") format("truetype");
+
+}
+
+@font-face {
+  font-family: "Inter";
+  font-weight: 700;
+  src: url("./fonts/Inter/static/Inter_24pt-Bold.ttf") format("truetype");
+
+}
+
+@font-face {
+  font-family: "Inter";
+  font-weight: 800;
+  src: url("./fonts/Inter/static/Inter_24pt-ExtraBold.ttf") format("truetype");
+
+}
+
+@font-face {
+  font-family: "Cookie";
+  font-weight: normal;
+  src: url("./fonts/Cookie/Cookie-Regular.ttf") format("truetype");
+
+}
 
 @theme {
   --font-inter: "Inter", sans-serif;
