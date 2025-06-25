@@ -3,6 +3,11 @@
 
 </div>
 
+@if (isWinner) {
+  <app-winning-modal [totalWords]="totalWordsFound"></app-winning-modal>
+
+}
+
 <div [ngClass]="'word-panel'" [ngStyle]="{ 'height': (isOpen) ? '40%' : '5.5%' }">
   <div [ngClass]="'h-full w-full'">
     <div [ngClass]="'flex flex-row-reverse items-center justify-between mb-1.5'">
@@ -48,7 +53,13 @@
 
   <div [ngClass]="'flex justify-center gap-x-1 absolute -top-1 w-svw text-center text-[2em] font-semibold'">
     <span [innerHTML]="text | uppercase | validateChar:soletreGame.fullAvailableLetters | safeHtml" [ngClass]="'flex gap-x-1 select-none'"></span>
-    <span [ngClass]="'animate-blinking-cursor text-blue-600 select-none'"> |</span>
+    <span [ngClass]="{
+    'animate-blinking-cursor': true,
+    'text-blue-600': true,
+    'select-none': true,
+    'hidden': isWinner
+
+    }"> |</span>
 
   </div>
 
@@ -74,14 +85,14 @@
   </div>
 
   <div [ngClass]="'flex items-center justify-evenly w-full'">
-    <button [ngClass]="'btn h-12 w-28.5 rounded-3xl'" (click)="triggerDeleteText()">Apagar</button>
+    <button [ngClass]="'btn h-12 w-28.5 rounded-3xl'" [disabled]="isWinner" (click)="triggerDeleteText()">Apagar</button>
 
-    <button [ngClass]="'btn h-12 w-12 rounded-full'" (click)="triggerShuffleLetters()">
+    <button [ngClass]="'btn h-12 w-12 rounded-full'" [disabled]="isWinner" (click)="triggerShuffleLetters()">
       <fa-icon [icon]="faRotate"></fa-icon>
 
     </button>
 
-    <button [ngClass]="'btn h-12 w-28.5 rounded-3xl'" (click)="triggerCheckWordInList()">Confirmar</button>
+    <button [ngClass]="'btn h-12 w-28.5 rounded-3xl'" [disabled]="isWinner" (click)="triggerCheckWordInList()">Confirmar</button>
 
   </div>
 

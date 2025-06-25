@@ -21,12 +21,12 @@
 }
 
 .box-message {
-  @apply bg-black text-white flex items-center absolute h-[37px] w-auto !pr-3 !pl-3 transform-[translateY(-260px)] rounded-[5px] z-[999];
+  @apply bg-black text-white flex items-center absolute h-[37px] w-auto !pr-3 !pl-3 transform-[translateY(-260px)] rounded-[5px] z-[900];
 
 }
 
 .word-panel {
-  @apply bg-white absolute w-[95%] p-1.5 top-0 mt-2.5 border-[1px] border-gray-300 rounded-[5px] overflow-hidden z-[999];
+  @apply bg-white absolute w-[95%] p-1.5 top-0 mt-2.5 border-[1px] border-gray-300 rounded-[5px] overflow-hidden z-[910];
 
 }
 
@@ -46,6 +46,6 @@
 }
 
 .btn {
-  @apply border border-gray-300 font-semibold active:bg-gray-300 select-none cursor-pointer;
+  @apply border border-gray-300 disabled:border-gray-100 disabled:bg-gray-50 font-semibold active:bg-gray-300 select-none cursor-pointer;
 
 }
