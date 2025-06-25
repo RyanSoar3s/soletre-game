@@ -78,11 +78,33 @@ app.get("/api/wordlist", async (_, res) => {
 
 });
 
-app.post("/api/wordlist/check-word", (req, res) => {
+app.post("/api/wordlist/check-word", async (req, res) => {
   const { word } = req.body;
+
+  if (!game) {
+    try {
+      if (!client) {
+        client = await redisClient();
+
+      }
+
+      await loadSoletreGame(client).then((data) => game = data);
+
+    } catch (err) {
+      return res.json({
+        message: "An error occurred while loading the soletre game.",
+        error: err,
+        game: null
+
+      });
+
+    }
+
+  }
+
   const wordsInfo = checkWordInList(word, game![0]);
 
-  res.json({
+  return res.json({
     isValid: wordsInfo.found,
     word: wordsInfo.value ?? ""
 
