@@ -62,8 +62,13 @@ async function saveGame(redis: RedisClientType, words: Array<string>, soletreGam
 
 }
 
-function isUpdate(today: number): boolean {
-  return today !== new Date().getDate();
+function isUpdate(date: number): boolean {
+  const now = new Date();
+  const today = new Intl.DateTimeFormat('pt-BR', {
+    timeZone: 'America/Sao_Paulo',
+    day: '2-digit'
+  }).format(now);
+  return date !== +today;
 
 }
 
