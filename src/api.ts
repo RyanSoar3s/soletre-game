@@ -2,13 +2,8 @@ import { SoletreGame } from '@models/soletre-game.model';
 import wordlist from './api/wordlist.json' with { type: "json" };
 import { ValidateCharPipe } from '@pipes/validate-char.pipe';
 import { RedisClientType } from 'redis';
-import { GetDateService } from '@services/get-date.service';
-import { inject } from '@angular/core';
 
 const validateCharPipe = new ValidateCharPipe();
-const getDataService = inject(GetDateService);
-
-const today = getDataService.getDate();
 
 function createNewSoletreGame(): [ Array<string>, SoletreGame ] {
   const index = Math.floor(Math.random() * wordlist.length);
@@ -22,7 +17,7 @@ function createNewSoletreGame(): [ Array<string>, SoletreGame ] {
       center: soletreGame.center,
       fullAvailableLetters: soletreGame.fullAvailableLetters,
       availableLetters: soletreGame.availableLetters,
-      date: today
+      date: getDate()
 
     }
   ];
@@ -62,8 +57,20 @@ async function saveGame(redis: RedisClientType, words: Array<string>, soletreGam
 
 }
 
+function getDate(): number {
+  const now = new Date();
+  const today = new Intl.DateTimeFormat("pt-BR", {
+    timeZone: "America/Sao_Paulo",
+    day: "2-digit"
+
+  }).format(now);
+
+  return +today;
+
+}
+
 function isUpdate(date: number): boolean {
-  return date !== today;
+  return date !== getDate();
 
 }
 
