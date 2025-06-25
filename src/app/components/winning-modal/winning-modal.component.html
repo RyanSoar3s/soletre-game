@@ -1,0 +1,27 @@
+<div [ngClass]="'modal'">
+  <div [ngClass]="'close-btn'" (click)="closeModal()">
+    <fa-icon [icon]="faXmark"></fa-icon>
+
+  </div>
+
+  <p [ngClass]="'font-bold text-[1em]'">Você ganhou 😎</p>
+  <h1 [ngClass]="'font-black text-[2em]'">Parabéns</h1>
+  <p [ngClass]="'font-medium'">Você acertou todas as {{ totalWords() }} palavras</p>
+
+  <ul [ngClass]="'flex justify-evenly list-none w-[340px] mt-[14px]!'">
+    @for (icon of icons; let index = $index; track index) {
+      <li [ngClass]="'link'">
+        <a [href]="links[index]" [target]="'_blank'">
+          <fa-icon [icon]="icon"></fa-icon>
+
+        </a>
+
+      </li>
+
+    }
+
+  </ul>
+
+  <h2 [ngClass]="'mt-[15px]!'">Criador: <span [ngClass]="'font-black text-blue-600'">Ryan Soares</span></h2>
+
+</div>
