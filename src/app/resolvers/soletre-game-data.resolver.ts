@@ -15,14 +15,8 @@ export const soletreGameDataResolver: ResolveFn<void> = () => {
   const requestApiService = inject(RequestApiService);
 
   const today = new Date().getDate();
-  const saved = localStorageService.getItem("SoletreGame");
+  const saved = localStorageService.hasItem("SoletreGame");
   const soletre = soletreGameService.getSoletreGame("SoletreGame");
-
-  if (saved && soletre?.date === today) {
-    console.log("Game already started.")
-    return of(undefined);
-
-  }
 
   if (soletre?.date !== today) {
     localStorageService.clearAll();
@@ -38,8 +32,12 @@ export const soletreGameDataResolver: ResolveFn<void> = () => {
 
       }
       console.log(data.message);
-      const str = soletreGameService.formatSoletreGameValue(data.game!);
-      localStorageService.saveItem("SoletreGame", str);
+
+      if (!saved) {
+        const str = soletreGameService.formatSoletreGameValue(data.game!);
+        localStorageService.saveItem("SoletreGame", str);
+
+      }
 
     }),
     map(() => undefined),
