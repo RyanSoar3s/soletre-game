@@ -4,6 +4,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { RequestApiService } from '@services/request-api.service';
 import { LocalStorageService } from '@services/local-storage.service';
 import { SoletreGameService } from '@services/soletre-game.service';
+import { GetDateService } from '@services/get-date.service';
 import { of, take, tap, map, catchError } from 'rxjs';
 
 export const soletreGameDataResolver: ResolveFn<void> = () => {
@@ -13,17 +14,13 @@ export const soletreGameDataResolver: ResolveFn<void> = () => {
   const localStorageService = inject(LocalStorageService);
   const soletreGameService = inject(SoletreGameService);
   const requestApiService = inject(RequestApiService);
+  const getDataService = inject(GetDateService);
 
-  const now = new Date();
-  const today = new Intl.DateTimeFormat('pt-BR', {
-    timeZone: 'America/Sao_Paulo',
-    day: '2-digit'
-  }).format(now);
-  
+  const today = getDataService.getDate();
   const saved = localStorageService.hasItem("SoletreGame");
   const soletre = soletreGameService.getSoletreGame("SoletreGame");
 
-  if (soletre?.date !== +today) {
+  if (soletre?.date !== today) {
     localStorageService.clearAll();
 
   }
