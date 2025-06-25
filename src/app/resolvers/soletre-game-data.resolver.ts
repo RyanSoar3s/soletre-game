@@ -14,11 +14,16 @@ export const soletreGameDataResolver: ResolveFn<void> = () => {
   const soletreGameService = inject(SoletreGameService);
   const requestApiService = inject(RequestApiService);
 
-  const today = new Date().getDate();
+  const now = new Date();
+  const today = new Intl.DateTimeFormat('pt-BR', {
+    timeZone: 'America/Sao_Paulo',
+    day: '2-digit'
+  }).format(now);
+  
   const saved = localStorageService.hasItem("SoletreGame");
   const soletre = soletreGameService.getSoletreGame("SoletreGame");
 
-  if (soletre?.date !== today) {
+  if (soletre?.date !== +today) {
     localStorageService.clearAll();
 
   }

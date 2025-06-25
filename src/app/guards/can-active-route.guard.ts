@@ -19,7 +19,13 @@ export const canActiveRouteGuard: CanActivateFn = () => {
   const isGameSaved = localStorageService.hasItem("SoletreGame");
   const soletreGame = JSON.parse(localStorageService.getItem("SoletreGame")!) as SoletreGame;
 
-  if (!isGameSaved || soletreGame!.date !== new Date().getDate()) {
+  const now = new Date();
+  const today = new Intl.DateTimeFormat('pt-BR', {
+    timeZone: 'America/Sao_Paulo',
+    day: '2-digit'
+  }).format(now);
+
+  if (!isGameSaved || soletreGame!.date !== +today) {
     router.navigate(['/']);
     return false;
 

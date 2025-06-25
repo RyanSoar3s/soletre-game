@@ -6,7 +6,11 @@ import { RedisClientType } from 'redis';
 const validateCharPipe = new ValidateCharPipe();
 
 function createNewSoletreGame(): [ Array<string>, SoletreGame ] {
-  const today = new Date().getDate();
+  const now = new Date();
+  const today = new Intl.DateTimeFormat('pt-BR', {
+    timeZone: 'America/Sao_Paulo',
+    day: '2-digit'
+  }).format(now);
   const index = Math.floor(Math.random() * wordlist.length);
   const soletreGame = wordlist[index] as Omit<SoletreGame, "date">;
 
@@ -18,7 +22,7 @@ function createNewSoletreGame(): [ Array<string>, SoletreGame ] {
       center: soletreGame.center,
       fullAvailableLetters: soletreGame.fullAvailableLetters,
       availableLetters: soletreGame.availableLetters,
-      date: today
+      date: +today
 
     }
   ];
