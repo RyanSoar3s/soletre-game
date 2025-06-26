@@ -31,6 +31,7 @@ import {
 
 } from '@angular/animations';
 import { decrypt } from '../../../libs/crypto';
+import { environment } from '@environments/environment';
 
 @Component({
   selector: 'app-game',
@@ -112,10 +113,7 @@ export class GameComponent implements AfterViewInit, AfterContentChecked {
       const letters = [ ...this.soletreGame.availableLetters ];
 
       const wordsStr = this.localStorageService.getItem("soletre_game_token");
-      const decryptData = decrypt(wordsStr!, process.env["CLIENT_SECRET_KEY"] || "myKey");
-      console.log("K: ", process.env["CLIENT_SECRET_KEY"])
-      console.log(decryptData)
-
+      const decryptData = decrypt(wordsStr!, environment.CLIENT_SECRET_KEY);
       this.words = JSON.parse(decryptData);
 
       letters.splice(3, 0, this.soletreGame.center);
