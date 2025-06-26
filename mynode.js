@@ -1,5 +1,5 @@
 import { writeFileSync } from 'fs';
-import { join } from 'path';
+import path, { join } from 'path';
 import { fileURLToPath } from 'url';
 
 const content = `
