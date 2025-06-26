@@ -112,7 +112,9 @@ export class GameComponent implements AfterViewInit, AfterContentChecked {
       const letters = [ ...this.soletreGame.availableLetters ];
 
       const wordsStr = this.localStorageService.getItem("soletre_game_token");
-      const decryptData = decrypt(wordsStr!, process.env["CLIENT_SECRET_KEY"] || "myKey")
+      const decryptData = decrypt(wordsStr!, process.env["CLIENT_SECRET_KEY"] || "myKey");
+      console.log("K: ", process.env["CLIENT_SECRET_KEY"])
+      console.log(decryptData)
 
       this.words = JSON.parse(decryptData);
 
