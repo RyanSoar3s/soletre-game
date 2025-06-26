@@ -4,8 +4,8 @@ import { isPlatformBrowser } from '@angular/common';
 import { RequestApiService } from '@services/request-api.service';
 import { LocalStorageService } from '@services/local-storage.service';
 import { SoletreGameService } from '@services/soletre-game.service';
-import { GetDateService } from '@services/get-date.service';
 import { of, take, tap, map, catchError } from 'rxjs';
+import getDate from '../../libs/get-current-date';
 
 export const soletreGameDataResolver: ResolveFn<void> = () => {
   const platformId = inject(PLATFORM_ID);
@@ -14,11 +14,10 @@ export const soletreGameDataResolver: ResolveFn<void> = () => {
   const localStorageService = inject(LocalStorageService);
   const soletreGameService = inject(SoletreGameService);
   const requestApiService = inject(RequestApiService);
-  const getDataService = inject(GetDateService);
 
-  const today = getDataService.getDate();
-  const saved = localStorageService.hasItem("SoletreGame");
-  const soletre = soletreGameService.getSoletreGame("SoletreGame");
+  const today = getDate();
+  const saved = localStorageService.hasItem("@soletre/game");
+  const soletre = soletreGameService.getSoletreGame("@soletre/game");
 
   if (soletre?.date !== today) {
     localStorageService.clearAll();
@@ -37,7 +36,8 @@ export const soletreGameDataResolver: ResolveFn<void> = () => {
 
       if (!saved) {
         const str = soletreGameService.formatSoletreGameValue(data.game!);
-        localStorageService.saveItem("SoletreGame", str);
+        localStorageService.saveItem("@soletre/game", str);
+        localStorageService.saveItem("soletre_game_token", data.token);
 
       }
 
