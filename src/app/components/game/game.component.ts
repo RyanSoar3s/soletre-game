@@ -143,7 +143,7 @@ export class GameComponent implements AfterViewInit, AfterContentChecked {
   }
 
   triggerAddChar(char: string): void {
-    if (this.text.length >= this.MAX_TEXT_LEN || this.isWinner) return;
+    if (this.text.length >= this.MAX_TEXT_LEN) return;
 
     this.text += char;
 
@@ -163,6 +163,8 @@ export class GameComponent implements AfterViewInit, AfterContentChecked {
     this.totalWordsFound = info.total;
     this.isAnimate = true;
     this.text = "";
+
+    if (this.totalWordsFound === this.words.length) this.isWinner = true;
 
   }
 
