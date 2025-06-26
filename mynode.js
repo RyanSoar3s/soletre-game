@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 const content = `
   export const environment = {
     production: true,
-    apiUrl: "https://soletre-game.vercel.app",
+    apiUrl: "${process.env.ORIGIN}",
     CLIENT_SECRET_KEY: '${process.env.CLIENT_SECRET_KEY}'
 
   };
