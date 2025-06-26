@@ -3,8 +3,8 @@ import { inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { LocalStorageService } from '@services/local-storage.service';
-import { GetDateService } from '@services/get-date.service';
 import { SoletreGame } from '@models/soletre-game.model';
+import getDate from '../../libs/get-current-date';
 
 export const canActiveRouteGuard: CanActivateFn = () => {
   const router = inject(Router);
@@ -17,14 +17,12 @@ export const canActiveRouteGuard: CanActivateFn = () => {
   }
 
   const localStorageService = inject(LocalStorageService);
-  const isGameSaved = localStorageService.hasItem("SoletreGame");
-  const soletreGame = JSON.parse(localStorageService.getItem("SoletreGame")!) as SoletreGame;
+  const isGameSaved = localStorageService.hasItem("@soletre/game");
+  const soletreGame = ((isGameSaved) ? JSON.parse(localStorageService.getItem("@soletre/game")!) : {}) as SoletreGame;
 
-  const getDataService = inject(GetDateService);
+  const today = getDate();
 
-  const today = getDataService.getDate();
-
-  if (!isGameSaved || soletreGame!.date !== today) {
+  if (!isGameSaved || soletreGame.date !== today) {
     router.navigate(['/']);
     return false;
 
