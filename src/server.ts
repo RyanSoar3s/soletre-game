@@ -6,7 +6,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import bootstrap from './main.server';
 import { createClient, RedisClientType } from 'redis';
-import { loadSoletreGame, checkWordInList } from './api';
+import { loadSoletreGame, checkWordInList, isUpdate } from './api';
 import { SoletreGame } from '@models/soletre-game.model';
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
@@ -17,7 +17,7 @@ export const app = express();
 const commonEngine = new CommonEngine();
 
 let client: RedisClientType | null = null;
-let game: SoletreGame | null = null;
+let game: [ Array<string>, SoletreGame ] | null = null;
 
 const redisClient = async () => {
   if (!client) {
@@ -44,22 +44,57 @@ app.use(cors({
 app.use(express.json());
 
 app.get("/api/wordlist", async (_, res) => {
-  if (!client) {
-    try {
-      const redis = await redisClient();
-      await loadSoletreGame(redis).then((soletreGame) => game = soletreGame);
+  try {
+    if (!client) {
+      client = await redisClient();
 
+    }
+
+    if (!game || isUpdate(game[1].date)) {
+      await loadSoletreGame(client).then((data) => game = data);
       return res.json({
         message: "Soletre game started successfully",
-        game: game
+        game: game![1]
 
       });
 
+    }
+
+    return res.json({
+      message: "Game already started.",
+      game: game![1]
+
+    });
+
+  } catch (err) {
+    return res.json({
+      message: "An error occurred while loading the soletre game.",
+      error: err,
+      game: null
+
+    });
+
+  }
+
+});
+
+app.post("/api/wordlist/check-word", async (req, res) => {
+  const { word } = req.body;
+
+  if (!game) {
+    try {
+      if (!client) {
+        client = await redisClient();
+
+      }
+
+      await loadSoletreGame(client).then((data) => game = data);
+
     } catch (err) {
       return res.json({
-        message: "The soletre game could not be loaded.",
-        game: null,
-        error: err
+        message: "An error occurred while loading the soletre game.",
+        error: err,
+        game: null
 
       });
 
@@ -67,19 +102,9 @@ app.get("/api/wordlist", async (_, res) => {
 
   }
 
+  const wordsInfo = checkWordInList(word, game![0]);
+
   return res.json({
-    message: "Game already started.",
-    game: game
-
-  });
-
-});
-
-app.post("/api/wordlist/check-word", (req, res) => {
-  const { word } = req.body;
-  const wordsInfo = checkWordInList(word);
-
-  res.json({
     isValid: wordsInfo.found,
     word: wordsInfo.value ?? "",
     words: wordsInfo.words

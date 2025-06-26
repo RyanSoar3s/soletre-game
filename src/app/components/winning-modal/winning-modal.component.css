@@ -1,0 +1,31 @@
+@reference "tailwindcss";
+
+@utility bg-overlay {
+  background: #00000078;
+
+}
+
+@utility transition-smooth {
+  transition: transform .7s ease;
+
+}
+
+:host {
+  @apply fixed bg-overlay top-0 flex items-center justify-center h-lvh w-lvw z-[999];
+
+}
+
+.modal {
+  @apply relative flex flex-col items-center justify-center gap-1 bg-white border-2 h-[550px] w-[500px] font-bold text-[1.3em] rounded-[22px] shadow-[2px_2px_5px_1px_#00000061];
+
+}
+
+.close-btn {
+  @apply bg-white flex items-center justify-center absolute h-[45px] w-[45px] -top-[18px] -right-[18px] border-2 rounded-full cursor-pointer;
+
+}
+
+.link {
+  @apply flex items-center justify-center text-[1.5em] h-[40px] w-[40px] transition-smooth transition hover:transform-[scale(1.5)]
+
+}

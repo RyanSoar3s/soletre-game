@@ -17,10 +17,6 @@ export const routes: Routes = [
   {
     path: "soletre",
     component: GameComponent,
-    resolve: {
-      data: soletreGameDataResolver
-
-    },
     canActivate: [
       canActiveRouteGuard
 
