@@ -3,6 +3,7 @@ export type SoletreGame = {
   center: string,
   fullAvailableLetters: string | Array<string>,
   availableLetters: string | Array<string>,
-  date: number
+  date: number,
+  total: number
 
 };
