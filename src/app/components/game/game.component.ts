@@ -10,7 +10,6 @@ import {
   ChangeDetectionStrategy
 
 } from '@angular/core';
-import { WinningModalComponent } from '@components/winning-modal/winning-modal.component';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faRotate } from '@fortawesome/free-solid-svg-icons';
@@ -32,16 +31,17 @@ import {
 } from '@angular/animations';
 import { decrypt } from '../../../libs/crypto';
 import { environment } from '@environments/environment';
+import { Router, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-game',
   imports: [
     CommonModule,
-    WinningModalComponent,
     FormsModule,
     FontAwesomeModule,
     ValidateCharPipe,
-    SafeHtmlPipe
+    SafeHtmlPipe,
+    RouterOutlet
 
   ],
   templateUrl: './game.component.html',
@@ -68,6 +68,7 @@ export class GameComponent implements AfterViewInit, AfterContentChecked {
   private localStorageService = inject(LocalStorageService);
   private soletreGameService = inject(SoletreGameService);
   private validateSoletreGameService = inject(ValidateSoletreGameService);
+  private route = inject(Router)
 
   protected readonly pathArrowDownImg = "assets/down.png";
 
@@ -120,6 +121,12 @@ export class GameComponent implements AfterViewInit, AfterContentChecked {
       this.soletreGame.fullAvailableLetters = letters;
       this.totalWordsFound = this.soletreGame.words.length;
 
+      if (this.totalWordsFound === this.words.length) {
+        this.isWinner = true
+        this.route.navigate(["/soletre/winner"]);
+
+      };
+
     }
 
   }
@@ -164,7 +171,11 @@ export class GameComponent implements AfterViewInit, AfterContentChecked {
     this.isAnimate = true;
     this.text = "";
 
-    if (this.totalWordsFound === this.words.length) this.isWinner = true;
+    if (this.totalWordsFound === this.words.length) {
+      this.isWinner = true
+      this.route.navigate(["/soletre/winner"]);
+
+    };
 
   }
 

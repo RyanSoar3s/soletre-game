@@ -3,11 +3,6 @@
 
 </div>
 
-@if (isWinner) {
-  <app-winning-modal [totalWords]="totalWordsFound"></app-winning-modal>
-
-}
-
 <div [ngClass]="'word-panel'" [ngStyle]="{ 'height': (isOpen) ? '40%' : '5.5%' }">
   <div [ngClass]="'h-full w-full'">
     <div [ngClass]="'flex flex-row-reverse items-center justify-between mb-1.5'">
@@ -63,7 +58,7 @@
 
   </div>
 
-  <div [ngClass]="'grid grid-rows-3 grid-cols-7 place-items-center h-full w-full'">
+  <div [ngClass]="'grid grid-rows-3 grid-cols-7 place-items-center h-full w-full'" [ngStyle]="{ 'z-index': (!isWinner) ? '0' : '-10' }">
     @for (letter of soletreGame!.fullAvailableLetters; let index = $index; track letter) {
       <div [ngClass]="[
       'game',
@@ -98,3 +93,4 @@
 
 </section>
 
+<router-outlet></router-outlet>
