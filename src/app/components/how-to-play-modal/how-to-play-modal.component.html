@@ -1,0 +1,25 @@
+<app-modal [height]="'600px'" [width]="'min(550px, 80%)'" [closePath]="'/'">
+  <div [ngClass]="'flex flex-col items-center justify-evenly h-[430px] w-[90%] !mb-[30px] !pl-[20px]'">
+    <div [ngClass]="'relative flex items-center justify-center gap-x-[10px] font-black text-[1.3em] underline h-[50px] w-full'">
+      <div [ngClass]="'flex items-center justify-center rounded-full border-[3px] h-[40px] w-[40px]'">
+        <fa-icon [ngClass]="'text-[0.9em]'" [icon]="faQuestion"></fa-icon>
+
+      </div>
+      <p [ngClass]="'!mr-[10%]'">Como jogar</p>
+
+    </div>
+
+    <div [ngClass]="'h-[317px] w-full overflow-hidden'">
+      <ul [ngClass]="'flex flex-col justify-evenly gap-2.5 h-full w-full overflow-y-auto'">
+        @for (rule of rules; track $index) {
+          <li [ngClass]="'text-[0.8em]'">• {{ rule }}</li>
+
+        }
+      </ul>
+
+    </div>
+
+
+  </div>
+
+</app-modal>
