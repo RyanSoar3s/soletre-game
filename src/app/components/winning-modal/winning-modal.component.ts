@@ -1,20 +1,22 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, input, Renderer2 } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faXmark, faAt, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import { faAt, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { faGithub, faLinkedin, faWhatsapp } from '@fortawesome/free-brands-svg-icons'
+import { ModalComponent } from '@shared/modal/modal.component';
+import { SoletreGameService } from '@services/soletre-game.service';
 
 @Component({
   selector: 'app-winning-modal',
   imports: [
     FontAwesomeModule,
-    CommonModule
+    CommonModule,
+    ModalComponent
   ],
   templateUrl: './winning-modal.component.html',
   styleUrl: './winning-modal.component.css'
 })
-export class WinningModalComponent {
-  protected readonly faXmark = faXmark;
+export class WinningModalComponent implements OnInit {
   protected readonly icons: Array<IconDefinition> = [ faGithub, faLinkedin, faWhatsapp, faAt ];
   protected readonly links: Array<string> = [
     "https://github.com/RyanSoar3s",
@@ -24,12 +26,13 @@ export class WinningModalComponent {
 
   ];
 
-  totalWords = input.required();
+  private soletreGameService = inject(SoletreGameService);
 
-  constructor(private el: ElementRef, private renderer: Renderer2) {}
+  totalWords = signal<number>(0);
 
-  closeModal(): void {
-    this.renderer.setStyle(this.el.nativeElement, "display", "none");
+  ngOnInit(): void {
+    const soletreGame = this.soletreGameService.getSoletreGame("@soletre/game");
+    this.totalWords.set(soletreGame.total);
 
   }
 
