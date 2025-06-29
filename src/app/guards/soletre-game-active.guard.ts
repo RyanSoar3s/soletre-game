@@ -1,12 +1,11 @@
-import { CanActivateFn } from '@angular/router';
-import { inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { Router } from '@angular/router';
-import { LocalStorageService } from '@services/local-storage.service';
+import { inject, PLATFORM_ID } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
 import { SoletreGame } from '@models/soletre-game.model';
+import { LocalStorageService } from '@services/local-storage.service';
 import getDate from '../../libs/get-current-date';
 
-export const canActiveRouteGuard: CanActivateFn = () => {
+export const soletreGameActiveGuard: CanActivateFn = () => {
   const router = inject(Router);
   const platformId = inject(PLATFORM_ID);
 
@@ -18,11 +17,12 @@ export const canActiveRouteGuard: CanActivateFn = () => {
 
   const localStorageService = inject(LocalStorageService);
   const isGameSaved = localStorageService.hasItem("@soletre/game");
+  const isTokenSaved = localStorageService.hasItem("soletre_game_token");
   const soletreGame = ((isGameSaved) ? JSON.parse(localStorageService.getItem("@soletre/game")!) : {}) as SoletreGame;
 
   const today = getDate();
 
-  if (!isGameSaved || soletreGame.date !== today) {
+  if (!isGameSaved || !isTokenSaved || soletreGame.date !== today) {
     router.navigate(['/']);
     return false;
 

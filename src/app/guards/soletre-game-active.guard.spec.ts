@@ -1,11 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { CanActivateFn } from '@angular/router';
 
-import { canActiveRouteGuard } from './can-active-route.guard';
+import { soletreGameActiveGuard } from './soletre-game-active.guard';
 
-describe('canActiveRouteGuard', () => {
+describe('soletreGameActiveGuard', () => {
   const executeGuard: CanActivateFn = (...guardParameters) => 
-      TestBed.runInInjectionContext(() => canActiveRouteGuard(...guardParameters));
+      TestBed.runInInjectionContext(() => soletreGameActiveGuard(...guardParameters));
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
