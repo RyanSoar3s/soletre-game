@@ -140,7 +140,7 @@ export class GameComponent implements AfterViewInit, AfterContentChecked {
       input.focus();
       const len = input.value.length;
       input.setSelectionRange(len, len);
-      input.value = this.trim.transform(input.value);
+      input.value = this.text = this.trim.transform(input.value);
 
     }
 
@@ -158,9 +158,10 @@ export class GameComponent implements AfterViewInit, AfterContentChecked {
 
   triggerCheckWordInList(): void {
     const info = this.validateSoletreGameService.validate(this.text, this.totalWordsFound, this.words, this.soletreGame);
-
+console.log(this.text, this.text.length)
     if (info.valid) {
       this.soletreGame.words.push(info.word);
+      this.soletreGame.words.sort();
       const value = this.soletreGameService.formatSoletreGameValue(this.soletreGame);
       this.localStorageService.updateItem("@soletre/game", value);
 
