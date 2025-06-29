@@ -16,7 +16,8 @@ export const soletreGameDataResolver: ResolveFn<void> = () => {
   const requestApiService = inject(RequestApiService);
 
   const today = getDate();
-  const saved = localStorageService.hasItem("@soletre/game");
+  const isGameSaved = localStorageService.hasItem("@soletre/game");
+  const isTokenSaved = localStorageService.hasItem("soletre_game_service");
   const soletre = soletreGameService.getSoletreGame("@soletre/game");
 
   if (soletre?.date !== today) {
@@ -34,7 +35,7 @@ export const soletreGameDataResolver: ResolveFn<void> = () => {
       }
       console.log(data.message);
 
-      if (!saved) {
+      if (!isGameSaved || !isTokenSaved) {
         const str = soletreGameService.formatSoletreGameValue(data.game!);
         localStorageService.saveItem("@soletre/game", str);
         localStorageService.saveItem("soletre_game_token", data.token);
