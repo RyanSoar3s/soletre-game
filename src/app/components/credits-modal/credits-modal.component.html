@@ -1,0 +1,33 @@
+<app-modal [height]="'550px'" [width]="'min(80%, 500px)'" [closePath]="'/'">
+  <div [ngClass]="'flex flex-col items-center justify-center gap-[17px] h-[300px] w-[90%] !pl-[15px] !pr-[15px]'">
+    <div [ngClass]="'h-[80px] w-[80px]'">
+      <img [ngClass]="'h-full w-full'" [src]="pathLogo" [alt]="'Logo do site'">
+
+    </div>
+
+    <p [ngClass]="'text-[1.05em] font-semibold'">
+      Inspirado em
+      <span [ngClass]="'text-[1em] font-black transition hover:text-[#0000001f]'">
+        <a [href]="'https://www.nytimes.com/puzzles/spelling-bee'" [target]="'_blank'">Spelling Bee</a>
+
+      </span>
+
+    </p>
+
+    <p [ngClass]="'text-[0.95em] text-justify'">
+      Divirta-se descobrindo novas palavras todos os dias.
+
+    </p>
+
+    <p [ngClass]="'text-[0.95em] text-justify'">
+      Se quiser conhecer outros projetos, clique
+      <span [ngClass]="'text-[1em] font-black transition hover:text-[#0000001f]'">
+        <a [href]="'https://github.com/RyanSoar3s'" [target]="'_blank'">aqui</a>
+
+      </span>.
+
+    </p>
+
+  </div>
+
+</app-modal>
