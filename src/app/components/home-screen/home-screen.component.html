@@ -13,11 +13,20 @@
 
   </button>
 
-  <button [ngClass]="'border-[1px] border-black font-semibold h-[50px] w-[180px] rounded-3xl cursor-pointer'">Créditos</button>
+  <button [ngClass]="'border-[1px] border-black font-semibold h-[50px] w-[180px] rounded-3xl cursor-pointer'">
+    <a [ngClass]="'flex items-center justify-center h-full w-full'" routerLink="creditos/">Créditos</a>
+
+  </button>
+
   <button [ngClass]="'flex justify-evenly w-[150px] font-semibold text-gray-800 hover:text-gray-700 cursor-pointer'">
-    <fa-icon [icon]="faCircleInfo"></fa-icon>
-    <span> Como Jogar?</span>
+     <a [ngClass]="'flex gap-[5px] items-center justify-center h-full w-full'" routerLink="como-jogar/">
+       <fa-icon [icon]="faQuestionCircle"></fa-icon>
+       <span> Como Jogar?</span>
+
+     </a>
 
   </button>
 
 </section>
+
+<router-outlet></router-outlet>

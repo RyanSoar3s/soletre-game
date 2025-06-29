@@ -1,14 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-home-screen',
   imports: [
     CommonModule,
     RouterLink,
+    RouterOutlet,
     FontAwesomeModule
 
   ],
@@ -16,6 +17,6 @@ import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
   styleUrl: './home-screen.component.css'
 })
 export class HomeScreenComponent {
-  protected readonly faCircleInfo = faCircleInfo;
+  protected readonly faQuestionCircle = faQuestionCircle;
 
 }
