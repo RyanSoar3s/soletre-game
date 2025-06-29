@@ -1,0 +1,11 @@
+<div #modal [ngClass]="'modal'">
+  <div [ngClass]="'close-btn'" (click)="closeModal()">
+    <fa-icon [icon]="faXmark"></fa-icon>
+
+  </div>
+
+  <ng-content select="[ div ]"></ng-content>
+
+  <h2>Criador: <span [ngClass]="'font-black text-blue-600'">Ryan Soares</span></h2>
+
+</div>
