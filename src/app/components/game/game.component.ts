@@ -91,6 +91,7 @@ export class GameComponent implements AfterViewInit, AfterContentChecked {
 
   protected isAnimate: boolean = false;
 
+  protected totalWords!: number;
   protected totalWordsFound!: number;
 
   protected readonly faRotate = faRotate;
@@ -119,6 +120,8 @@ export class GameComponent implements AfterViewInit, AfterContentChecked {
 
       letters.splice(3, 0, this.soletreGame.center);
       this.soletreGame.fullAvailableLetters = letters;
+
+      this.totalWords = this.soletreGame.total;
       this.totalWordsFound = this.soletreGame.words.length;
 
       if (this.totalWordsFound === this.words.length) {
