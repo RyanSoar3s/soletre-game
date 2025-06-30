@@ -1,0 +1,12 @@
+<p [ngClass]="'text-[1em] font-semibold'">{{ level() }}</p>
+
+<div [ngClass]="'bg-blue-300 h-[15px] w-[90%] rounded-2xl'">
+  <div [ngClass]="'relative flex justify-end bg-blue-600 h-full rounded-2xl pl-[18px]!'" [ngStyle]="{ 'width': 'calc(' + widthBar() + '* 100%)' }">
+    <div [ngClass]="'absolute -top-[8px] flex items-center justify-center bg-blue-600 h-[33px] w-[33px] rounded-full text-white font-semibold'">
+      {{ points() }}
+
+    </div>
+
+  </div>
+
+</div>
