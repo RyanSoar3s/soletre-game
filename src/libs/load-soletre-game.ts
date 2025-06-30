@@ -3,6 +3,7 @@ import wordlist from './wordlist.json' with { type: "json" };
 import { RedisClientType } from 'redis';
 import { encrypt } from './crypto';
 import getDate from './get-current-date';
+import { getFullPoints } from './get-points-words';
 
 function createNewSoletreGame(): [ Array<string>, game: SoletreGame ] {
   const index = Math.floor(Math.random() * wordlist.length);
@@ -16,7 +17,11 @@ function createNewSoletreGame(): [ Array<string>, game: SoletreGame ] {
       fullAvailableLetters: soletreGame.fullAvailableLetters,
       availableLetters: soletreGame.availableLetters,
       date: getDate(),
-      total: soletreGame.words.length
+      total: soletreGame.words.length,
+      level: "Iniciante",
+      points: 0,
+      totalPoints: getFullPoints(soletreGame.words)
+
     }
 
   ];
