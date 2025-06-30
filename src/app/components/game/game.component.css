@@ -16,7 +16,7 @@
 }
 
 :host {
-  @apply relative flex items-center justify-center h-lvh w-lvw overflow-hidden;
+  @apply relative flex flex-col items-center justify-center h-lvh w-lvw overflow-hidden;
 
 }
 
@@ -26,7 +26,7 @@
 }
 
 .word-panel {
-  @apply bg-white absolute w-[95%] p-1.5 top-0 mt-2.5 border-[1px] border-gray-300 rounded-[5px] overflow-hidden z-[910];
+  @apply bg-white absolute w-[95%] p-1.5 top-[50px] mt-2.5 border-[1px] border-gray-300 rounded-[5px] overflow-hidden z-[910];
 
 }
 

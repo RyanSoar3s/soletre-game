@@ -32,11 +32,13 @@ import {
 import { decrypt } from '../../../libs/crypto';
 import { environment } from '@environments/environment';
 import { Router, RouterOutlet } from '@angular/router';
+import { ProgressBarComponent } from '@components/progress-bar/progress-bar.component';
 
 @Component({
   selector: 'app-game',
   imports: [
     CommonModule,
+    ProgressBarComponent,
     FormsModule,
     FontAwesomeModule,
     ValidateCharPipe,
@@ -51,7 +53,7 @@ import { Router, RouterOutlet } from '@angular/router';
       state("open", style({ opacity: 1, transform: "translateY(-200px)" })),
       state("close", style({ opacity: 0, transform: "translateY(-260px)" })),
       transition("open => close", [
-        animate("1s ease-in-out")
+        animate("1.3s ease-in-out")
 
       ])
 
@@ -76,7 +78,7 @@ export class GameComponent implements AfterViewInit, AfterContentChecked {
   protected text: string = "";
   protected MAX_TEXT_LEN: number = 30;
   protected soletreGame!: SoletreGame;
-  words!: Array<string>;
+  protected words!: Array<string>;
 
   protected charStyles: Array<CharStyle> = [
     { bgColor: "bg-gray-300", textColor: "text-black", rowStart: "row-start-1", colStart: "col-start-3" },
@@ -99,6 +101,10 @@ export class GameComponent implements AfterViewInit, AfterContentChecked {
   protected isOpen: boolean = false;
   protected isWinner: boolean = false;
 
+  protected level = "";
+  protected widthBar = "0%";
+  protected points = 0;
+
   private trim = new TrimPipe();
 
   ngAfterViewInit(): void {
@@ -110,27 +116,35 @@ export class GameComponent implements AfterViewInit, AfterContentChecked {
     const isGameExist = this.localStorageService.hasItem("@soletre/game");
 
     if (isGameExist && !this.soletreGame) {
-      this.soletreGame = this.soletreGameService.getSoletreGame("@soletre/game");
-
-      const letters = [ ...this.soletreGame.availableLetters ];
-
-      const wordsStr = this.localStorageService.getItem("soletre_game_token");
-      const decryptData = decrypt(wordsStr!, environment.CLIENT_SECRET_KEY);
-      this.words = JSON.parse(decryptData);
-
-      letters.splice(3, 0, this.soletreGame.center);
-      this.soletreGame.fullAvailableLetters = letters;
-
-      this.totalWords = this.soletreGame.total;
-      this.totalWordsFound = this.soletreGame.words.length;
-
-      if (this.totalWordsFound === this.words.length) {
-        this.isWinner = true
-        this.route.navigate(["/soletre/winner"]);
-
-      };
+      this.initSoletreGame();
+      this.checkWinner();
 
     }
+
+  }
+
+  private initSoletreGame(): void {
+    this.soletreGame = this.soletreGameService.getSoletreGame("@soletre/game");
+
+    this.level = this.soletreGame.level;
+    this.points = this.soletreGame.points;
+
+    const width = this.points / this.soletreGame.totalPoints;
+    this.widthBar = width.toFixed(4);
+
+    const letters = [ ...this.soletreGame.availableLetters ];
+
+    const token = this.localStorageService.getItem("soletre_game_token");
+    const decryptData = decrypt(token!, environment.CLIENT_SECRET_KEY);
+
+
+    this.words = JSON.parse(decryptData) as Array<string>;
+console.log(this.words)
+    letters.splice(3, 0, this.soletreGame.center);
+    this.soletreGame.fullAvailableLetters = letters;
+
+    this.totalWords = this.soletreGame.total;
+    this.totalWordsFound = this.soletreGame.words.length;
 
   }
 
@@ -160,11 +174,13 @@ export class GameComponent implements AfterViewInit, AfterContentChecked {
   }
 
   triggerCheckWordInList(): void {
-    const info = this.validateSoletreGameService.validate(this.text, this.totalWordsFound, this.words, this.soletreGame);
-console.log(this.text, this.text.length)
+    const info = this.validateSoletreGameService.validate(this.text, this.totalWordsFound, this.points, this.soletreGame.totalPoints, this.words, this.soletreGame);
+
     if (info.valid) {
       this.soletreGame.words.push(info.word);
       this.soletreGame.words.sort();
+      this.soletreGame.level = info.level;
+      this.soletreGame.points = info.points;
       const value = this.soletreGameService.formatSoletreGameValue(this.soletreGame);
       this.localStorageService.updateItem("@soletre/game", value);
 
@@ -173,13 +189,14 @@ console.log(this.text, this.text.length)
     this.message = info.message;
     this.totalWordsFound = info.total;
     this.isAnimate = true;
+
+    this.level = info.level || this.level;
+    this.points = info.points;
+    this.widthBar = (this.points / this.soletreGame.totalPoints).toFixed(4);
+
     this.text = "";
 
-    if (this.totalWordsFound === this.words.length) {
-      this.isWinner = true
-      this.route.navigate(["/soletre/winner"]);
-
-    };
+   this.checkWinner();
 
   }
 
@@ -196,12 +213,21 @@ console.log(this.text, this.text.length)
     this.soletreGame.fullAvailableLetters = charList;
 
     const soletreGameStringify = this.soletreGameService.formatSoletreGameValue(this.soletreGame)
-    this.localStorageService.updateItem("SoletreGame", soletreGameStringify);
+    this.localStorageService.updateItem("@soletre/game", soletreGameStringify);
 
   }
 
   triggerDeleteText(): void {
     this.text = this.text.slice(0, this.text.length - 1); console.log(this.words)
+
+  }
+
+  private checkWinner(): void {
+    if (this.soletreGame.points === this.soletreGame.totalPoints) {
+      this.isWinner = true
+      this.route.navigate(["/soletre/winner"]);
+
+    };
 
   }
 
