@@ -2,6 +2,8 @@ export type ValidateWord = {
   valid: boolean,
   word: string,
   message: string,
-  total: number
+  total: number,
+  level: string,
+  points: number
 
 };

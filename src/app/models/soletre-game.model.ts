@@ -4,6 +4,9 @@ export type SoletreGame = {
   fullAvailableLetters: string | Array<string>,
   availableLetters: string | Array<string>,
   date: number,
-  total: number
+  total: number,
+  level: string,
+  points: number,
+  totalPoints: number
 
 };
