@@ -20,10 +20,14 @@ export class HowToPlayModalComponent {
   protected readonly rules = [
     "Toda palavra deve possuir no mínimo 4 letras.",
     "Toda palavra deve possuir a letra central.",
-    "Não é permitido: palavras com hífen, pronomes, preposições e palavrões",
+    "Não é permitido: palavras com hífen, pronomes, preposições e palavrões.",
     "Não é permitido palavras com plural. EX.: CARROS, MOEDAS...",
     "É permitido verbos no infinitivo. EX.: JOGAR, COMER, VESTIR...",
-    "É permitido palavras no masculino e/ou feminino. EX.: MOÇO e MOÇA"
+    "É permitido palavras no masculino e/ou feminino. EX.: MOÇO e MOÇA.",
+    "Nem todas as palavras do português estão na lista do jogo.",
+    "Palavras de 4 letras valem 1 ponto cada.",
+    "Palavras mais longas ganham 1 ponto por letra.",
+    "Cada jogo inclui pelo menos um 'pangrama', que usa todas as letras. Eles valem 7 pontos extras!"
 
   ];
 
