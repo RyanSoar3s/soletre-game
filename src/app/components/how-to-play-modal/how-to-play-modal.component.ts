@@ -24,7 +24,7 @@ export class HowToPlayModalComponent {
     "Não é permitido palavras com plural. EX.: CARROS, MOEDAS...",
     "É permitido verbos no infinitivo. EX.: JOGAR, COMER, VESTIR...",
     "É permitido palavras no masculino e/ou feminino. EX.: MOÇO e MOÇA.",
-    "Nem todas as palavras do português estão na lista do jogo.",
+    "Nem todas as palavras que é possível formar estão na lista do jogo.",
     "Palavras de 4 letras valem 1 ponto cada.",
     "Palavras mais longas ganham 1 ponto por letra.",
     "Cada jogo inclui pelo menos um 'pangrama', que usa todas as letras. Eles valem 7 pontos extras!"
