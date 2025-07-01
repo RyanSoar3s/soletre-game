@@ -139,7 +139,7 @@ export class GameComponent implements AfterViewInit, AfterContentChecked {
 
 
     this.words = JSON.parse(decryptData) as Array<string>;
-console.log(this.words)
+
     letters.splice(3, 0, this.soletreGame.center);
     this.soletreGame.fullAvailableLetters = letters;
 
@@ -218,7 +218,7 @@ console.log(this.words)
   }
 
   triggerDeleteText(): void {
-    this.text = this.text.slice(0, this.text.length - 1); console.log(this.words)
+    this.text = this.text.slice(0, this.text.length - 1);
 
   }
 
