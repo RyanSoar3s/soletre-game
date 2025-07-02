@@ -7,10 +7,10 @@ export const winnerActiveGuard: CanActivateChildFn = () => {
   const route = inject(Router);
 
   const soletreGame = soletreGameService.getSoletreGame("@soletre/game");
-  const total = soletreGame.total;
-  const length = soletreGame.words.length;
+  const totalPoints = soletreGame.totalPoints;
+  const points = soletreGame.points;
 
-  if (total !== length) {
+  if (totalPoints !== points) {
     route.navigate([ "/soletre" ]);
     return false;
 
