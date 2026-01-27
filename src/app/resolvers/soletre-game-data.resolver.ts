@@ -20,6 +20,11 @@ export const soletreGameDataResolver: ResolveFn<void> = () => {
   const isTokenSaved = localStorageService.hasItem("soletre_game_token");
   const soletre = soletreGameService.getSoletreGame("@soletre/game");
 
+  if (isGameSaved && isTokenSaved && soletre?.date === today) {
+    return of(undefined);
+
+  }
+
   if (soletre?.date !== today) {
     localStorageService.clearAll();
 
